@@ -2,7 +2,8 @@ package nl.appelgebakje22.xdata;
 
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
-import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
+import nl.appelgebakje22.xdata.adapter.NetworkInput;
+import nl.appelgebakje22.xdata.adapter.NetworkOutput;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.Reference;
@@ -34,7 +35,7 @@ public class XDataSerializationUtils {
 		handler.writeToReference(operation, ref, serializer);
 	}
 
-	public static void writeRefToNetwork(final Operation operation, final NetworkAdapter network, final Reference ref) {
+	public static void writeRefToNetwork(final Operation operation, final NetworkOutput output, final Reference ref) {
 		final ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
 		if (handler == null) {
 			//TODO logging
@@ -42,6 +43,17 @@ public class XDataSerializationUtils {
 			return;
 		}
 		final Serializer<?> serializer = handler.readFromReference(operation, ref);
-		serializer.toNetwork(ref, network);
+		serializer.toNetwork(ref, output);
+	}
+
+	public static void readRefFromNetwork(final Operation operation, final NetworkInput input, final Reference ref) {
+		final ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
+		if (handler == null) {
+			//TODO logging
+			System.out.printf("Cannot deserialize field %s because no matching %s was registered%n", ref.getKey().getRawField(), ReferenceHandler.class.getName());
+			return;
+		}
+		final Serializer<?> serializer = handler.readFromReference(operation, ref);
+		serializer.fromNetwork(ref, input);
 	}
 }

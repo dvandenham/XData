@@ -4,21 +4,26 @@ import java.util.Arrays;
 import java.util.List;
 import nbt.NbtAdapterFactory;
 import net.querz.nbt.io.SNBTUtil;
+import nettest.ByteArrayNetworkOutput;
 import nl.appelgebakje22.xdata.ManagedDataMap;
 import nl.appelgebakje22.xdata.Operation;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.adapter.TableAdapter;
 import nl.appelgebakje22.xdata.api.IManaged;
 import nl.appelgebakje22.xdata.api.Persisted;
+import nl.appelgebakje22.xdata.api.Synchronized;
 
 public class TestMain implements IManaged {
 
 	private final ManagedDataMap map = new ManagedDataMap(this);
 	@Persisted
+	@Synchronized
 	private final int[] test = { 3, 2, 1 };
 	@Persisted
+	@Synchronized
 	private final int test3 = 1;
 	@Persisted
+	@Synchronized
 	private final List<Boolean> test2 = new ArrayList<>(Arrays.asList(false, false, true));
 
 	//	@Persisted
@@ -30,19 +35,9 @@ public class TestMain implements IManaged {
 		final TestMain main = new TestMain();
 		final var map = main.getDataMap();
 		map.tick();
-		final String org = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(map.serialize(Operation.FULL, adapters)));
-		System.out.println(org);
-		//
-		//		map.serialize(Operation.PARTIAL, adapters);
-		//		serialize(adapters, map);
-		//		main.test[1] = 10;
-		//		map.tick();
-		//		serialize(adapters, map);
-		final var a = SNBTUtil.fromSNBT(org);
-		map.deserialize(Operation.FULL, adapters, (TableAdapter) NbtAdapterFactory.fromTag(adapters, a));
-		final String org2 = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(map.serialize(Operation.FULL, adapters)));
-		System.out.println(org2);
-		System.out.println(org.equals(org2));
+		final ByteArrayNetworkOutput out = new ByteArrayNetworkOutput();
+		map.toNetwork(Operation.FULL, out);
+		System.out.println(out.toByteArray().length);
 	}
 
 	private static String serialize(final NbtAdapterFactory adapters, final ManagedDataMap map) throws IOException {

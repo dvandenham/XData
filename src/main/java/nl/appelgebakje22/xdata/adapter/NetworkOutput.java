@@ -1,6 +1,6 @@
 package nl.appelgebakje22.xdata.adapter;
 
-public interface NetworkAdapter {
+public interface NetworkOutput {
 
 	void write(boolean data);
 
@@ -20,21 +20,9 @@ public interface NetworkAdapter {
 
 	void write(String data);
 
-	boolean readBoolean();
+	void write(byte[] bytes, int start, int length);
 
-	byte readByte();
-
-	short readShort();
-
-	int readInt();
-
-	long readLong();
-
-	float readFloat();
-
-	double readDouble();
-
-	char readChar();
-
-	String readString();
+	default void write(final byte[] bytes) {
+		this.write(bytes, 0, bytes.length);
+	}
 }

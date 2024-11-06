@@ -6,7 +6,8 @@ import nl.appelgebakje22.xdata.XDataRegister;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.ArrayAdapter;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
-import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
+import nl.appelgebakje22.xdata.adapter.NetworkInput;
+import nl.appelgebakje22.xdata.adapter.NetworkOutput;
 import nl.appelgebakje22.xdata.adapter.TableAdapter;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.ArrayReference;
@@ -52,27 +53,27 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 	}
 
 	@Override
-	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+	public void toNetwork(final Reference ref, final NetworkOutput output) {
 		final Reference[] arrayRefs = ArraySerializer.makeRefs(ref, this.getData().length);
-		network.write(this.getData().length);
+		output.write(this.getData().length);
 		for (int i = 0; i < this.getData().length; ++i) {
 			final Serializer<?> serializer = this.getData()[i];
-			network.write(serializer.getSid());
-			serializer.toNetwork(arrayRefs[i], network);
+			output.write(serializer.getSid());
+			serializer.toNetwork(arrayRefs[i], output);
 		}
 	}
 
 	@Override
-	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
-		final Serializer<?>[] arr = new Serializer[network.readInt()];
+	public void fromNetwork(final Reference ref, final NetworkInput input) {
+		final Serializer<?>[] arr = new Serializer[input.readInt()];
 		final Reference[] arrayRefs = ArraySerializer.makeRefs(ref, arr.length);
 		for (int i = 0; i < arr.length; ++i) {
-			final int sid = network.readInt();
+			final int sid = input.readInt();
 			arr[i] = XDataRegister.getSerializerById(sid);
 			if (arr[i] == null) {
 				throw new IllegalStateException("Could not create %s with id %s".formatted(Serializer.class.getName(), sid));
 			}
-			arr[i].fromNetwork(arrayRefs[i], network);
+			arr[i].fromNetwork(arrayRefs[i], input);
 		}
 		this.setData(arr);
 	}

@@ -3,7 +3,8 @@ package nl.appelgebakje22.xdata.serializers;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
-import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
+import nl.appelgebakje22.xdata.adapter.NetworkInput;
+import nl.appelgebakje22.xdata.adapter.NetworkOutput;
 import nl.appelgebakje22.xdata.adapter.NumberAdapter;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.Reference;
@@ -23,13 +24,13 @@ public class IntSerializer extends Serializer<Integer> {
 	}
 
 	@Override
-	public void toNetwork(final Reference ref, final NetworkAdapter network) {
-		network.write(this.getData());
+	public void toNetwork(final Reference ref, final NetworkOutput output) {
+		output.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
-		this.setData(network.readInt());
+	public void fromNetwork(final Reference ref, final NetworkInput input) {
+		this.setData(input.readInt());
 	}
 
 	public static IntSerializer of(final int data) {

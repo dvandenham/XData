@@ -15,6 +15,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import lombok.Getter;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
+import nl.appelgebakje22.xdata.adapter.NetworkInput;
+import nl.appelgebakje22.xdata.adapter.NetworkOutput;
 import nl.appelgebakje22.xdata.adapter.TableAdapter;
 import nl.appelgebakje22.xdata.api.IManaged;
 import nl.appelgebakje22.xdata.api.Persisted;
@@ -154,6 +156,38 @@ public class ManagedDataMap {
 				final Reference ref = this.getReference(field);
 				XDataSerializationUtils.readRefFromAdapter(operation, adapters, ref, table.get(tagKey));
 				ref.clearPersistenceMark();
+			}
+		}
+	}
+
+	public void toNetwork(final Operation operation, final NetworkOutput output) {
+		output.write(switch (operation) {
+			case FULL -> this.syncMapper.size();
+			case PARTIAL -> this.dirtySyncFields.cardinality();
+		});
+		this.syncMapper.entrySet().stream().filter(entry -> switch (operation) {
+			case FULL -> true;
+			case PARTIAL -> this.dirtyPersistenceFields.get(this.syncFields.getInt(entry.getValue()));
+		}).forEach(entry -> {
+			output.write(entry.getKey());
+			final Reference ref = this.getReference(entry.getValue());
+			XDataSerializationUtils.writeRefToNetwork(operation, output, ref);
+			ref.clearSyncMark();
+		});
+	}
+
+	public void fromNetwork(final Operation operation, final NetworkInput input) {
+		final int iterationCount = input.readInt();
+		for (int i = 0; i < iterationCount; ++i) {
+			final String syncKey = input.readString();
+			final ReferenceKey field = this.syncMapper.get(syncKey);
+			if (field == null) {
+				//TODO log
+				System.out.println("Cannot deserialize data for key " + syncKey + " since it has no mapping.");
+			} else {
+				final Reference ref = this.getReference(field);
+				XDataSerializationUtils.readRefFromNetwork(operation, input, ref);
+				ref.clearSyncMark();
 			}
 		}
 	}

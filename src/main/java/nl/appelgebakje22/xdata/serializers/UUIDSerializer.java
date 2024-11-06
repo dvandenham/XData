@@ -4,7 +4,8 @@ import java.util.UUID;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
-import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
+import nl.appelgebakje22.xdata.adapter.NetworkInput;
+import nl.appelgebakje22.xdata.adapter.NetworkOutput;
 import nl.appelgebakje22.xdata.adapter.StringAdapter;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.Reference;
@@ -24,13 +25,13 @@ public class UUIDSerializer extends Serializer<UUID> {
 	}
 
 	@Override
-	public void toNetwork(final Reference ref, final NetworkAdapter network) {
-		network.write(this.getData().toString());
+	public void toNetwork(final Reference ref, final NetworkOutput output) {
+		output.write(this.getData().toString());
 	}
 
 	@Override
-	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
-		this.setData(UUID.fromString(network.readString()));
+	public void fromNetwork(final Reference ref, final NetworkInput input) {
+		this.setData(UUID.fromString(input.readString()));
 	}
 
 	public static UUIDSerializer of(final UUID data) {
