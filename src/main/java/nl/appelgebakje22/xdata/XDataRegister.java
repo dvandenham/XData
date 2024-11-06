@@ -115,7 +115,7 @@ public final class XDataRegister {
 			return new ArraySerializer();
 		}
 		int id = HANDLER_TO_SERIALIZER_MAPPING.getInt(handler);
-		return getSerializerById(id);
+		return XDataRegister.getSerializerById(id);
 	}
 
 	@Nullable

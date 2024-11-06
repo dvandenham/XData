@@ -6,15 +6,13 @@ import nl.appelgebakje22.xdata.XDataRegister;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
 import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
-import nl.appelgebakje22.xdata.ref.Reference;
 import org.jetbrains.annotations.Nullable;
 
-@Getter
-@Setter
 public abstract class Serializer<T> {
 
+	@Getter
+	@Setter
 	private T data;
-	private Reference ref;
 
 	@Nullable
 	public abstract BaseAdapter serialize(AdapterFactory adapters);

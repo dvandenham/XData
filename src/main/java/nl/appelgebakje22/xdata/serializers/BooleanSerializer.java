@@ -21,10 +21,6 @@ public class BooleanSerializer extends Serializer<Boolean> {
 		setData(booleanAdapter.getBoolean());
 	}
 
-	public static BooleanSerializer of(boolean data) {
-		return XData.make(new BooleanSerializer(), serializer -> serializer.setData(data));
-	}
-
 	@Override
 	public void toNetwork(NetworkAdapter network) {
 		network.write(getData());
@@ -33,5 +29,9 @@ public class BooleanSerializer extends Serializer<Boolean> {
 	@Override
 	public void fromNetwork(NetworkAdapter network) {
 		setData(network.readBoolean());
+	}
+
+	public static BooleanSerializer of(boolean data) {
+		return XData.make(new BooleanSerializer(), serializer -> serializer.setData(data));
 	}
 }
