@@ -39,7 +39,7 @@ public final class XData {
 
 		XDataRegister.register(ArraySerializer.class, ArraySerializer::new);
 
-		XDataRegister.INITIALIZED.set(true);
+		XDataRegister.freeze();
 	}
 
 	public static <T> T make(T obj, Consumer<T> mod) {

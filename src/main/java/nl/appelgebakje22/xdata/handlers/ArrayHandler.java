@@ -41,7 +41,19 @@ public final class ArrayHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public void writeToReference(Reference ref, Serializer<?> serializer, HolderLookup_Provider registries) {
-
+	public void writeToReference(Reference ref, Serializer<?> rawSerializer, HolderLookup_Provider registries) {
+		Object currentData = ref.getValueHolder().get();
+		if (currentData != null && !currentData.getClass().isArray()) {
+			throw new IllegalStateException("Field is not an array");
+		}
+		ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
+		if (currentData == null || Array.getLength(currentData) != serializer.getData().length) {
+			currentData = Array.newInstance(this.contentType, serializer.getData().length);
+			ref.getValueHolder().set(currentData);
+		}
+		for (int i = 0; i < Array.getLength(currentData); ++i) {
+			ArrayReference itemRef = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
+			this.contentHandler.writeToReference(itemRef, serializer.getData()[i], registries);
+		}
 	}
 }
