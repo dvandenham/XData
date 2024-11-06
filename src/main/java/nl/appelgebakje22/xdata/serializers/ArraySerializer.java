@@ -1,22 +1,16 @@
 package nl.appelgebakje22.xdata.serializers;
 
-import lombok.Getter;
-import lombok.Setter;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.XDataRegister;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.ArrayAdapter;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
+import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
 import nl.appelgebakje22.xdata.adapter.TableAdapter;
 import nl.appelgebakje22.xdata.api.Serializer;
-import nl.appelgebakje22.xdata.dummyclasses.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
-public class ArraySerializer implements Serializer<Serializer<?>[]> {
-
-	@Getter
-	@Setter
-	private Serializer<?>[] data;
+public class ArraySerializer extends Serializer<Serializer<?>[]> {
 
 	@Override
 	public @Nullable BaseAdapter serialize(AdapterFactory adapters) {
@@ -52,13 +46,27 @@ public class ArraySerializer implements Serializer<Serializer<?>[]> {
 	}
 
 	@Override
-	public void toNetwork(RegistryFriendlyByteBuf buf) {
-		//TODO implement
+	public void toNetwork(NetworkAdapter network) {
+		network.write(this.getData().length);
+		for (int i = 0; i < this.getData().length; ++i) {
+			Serializer<?> serializer = this.getData()[i];
+			network.write(serializer.getSid());
+			serializer.toNetwork(network);
+		}
 	}
 
 	@Override
-	public void fromNetwork(RegistryFriendlyByteBuf buf) {
-		//TODO implement
+	public void fromNetwork(NetworkAdapter network) {
+		Serializer<?>[] arr = new Serializer[network.readInt()];
+		for (int i = 0; i < arr.length; ++i) {
+			int sid = network.readInt();
+			arr[i] = XDataRegister.getSerializerById(sid);
+			if (arr[i] == null) {
+				throw new IllegalStateException("Could not create %s with id %s".formatted(Serializer.class.getName(), sid));
+			}
+			arr[i].fromNetwork(network);
+		}
+		this.setData(arr);
 	}
 
 	public static ArraySerializer of(Serializer<?>[] data) {

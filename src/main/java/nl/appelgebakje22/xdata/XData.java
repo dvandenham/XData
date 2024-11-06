@@ -15,11 +15,9 @@ import nl.appelgebakje22.xdata.handlers.CharHandler;
 import nl.appelgebakje22.xdata.handlers.DoubleHandler;
 import nl.appelgebakje22.xdata.handlers.EnumHandler;
 import nl.appelgebakje22.xdata.handlers.FloatHandler;
-import nl.appelgebakje22.xdata.handlers.IManagedHandler;
 import nl.appelgebakje22.xdata.handlers.IntHandler;
 import nl.appelgebakje22.xdata.handlers.LongHandler;
 import nl.appelgebakje22.xdata.handlers.ShortHandler;
-import nl.appelgebakje22.xdata.serializers.AdapterSerializer;
 import nl.appelgebakje22.xdata.serializers.ArraySerializer;
 import nl.appelgebakje22.xdata.serializers.BooleanSerializer;
 import nl.appelgebakje22.xdata.serializers.ByteSerializer;
@@ -49,10 +47,10 @@ public final class XData {
 
 		register(StringSerializer.class, StringSerializer::new, String.class, true);
 		register(UUIDSerializer.class, UUIDSerializer::new, UUID.class, true);
-		register(AdapterSerializer.class, AdapterSerializer::new, BaseAdapter.class, false);
+//		register(AdapterSerializer.class, AdapterSerializer::new, BaseAdapter.class, false);
 
 		register(StringSerializer.class, StringSerializer::new, new EnumHandler());
-		register(AdapterSerializer.class, AdapterSerializer::new, new IManagedHandler());
+//		register(AdapterSerializer.class, AdapterSerializer::new, new IManagedHandler());
 
 		registerCallback.run();
 

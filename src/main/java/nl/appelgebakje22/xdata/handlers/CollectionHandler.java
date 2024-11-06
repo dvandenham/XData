@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nl.appelgebakje22.xdata.Operation;
 import nl.appelgebakje22.xdata.XData;
-import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.api.Holder;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
@@ -30,7 +29,7 @@ public class CollectionHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, AdapterFactory adapters, Reference ref) {
+	public Serializer<?> readFromReference(Operation operation, Reference ref) {
 		final Object currentData = ref.getValueHolder().get();
 		if (!(currentData instanceof final Collection<?> collection)) {
 			throw new IllegalStateException("Field is not a collection");
@@ -38,14 +37,14 @@ public class CollectionHandler implements ReferenceHandler {
 		final Serializer<?>[] arr = new Serializer[collection.size()];
 		for (int i = 0; i < arr.length; ++i) {
 			final Reference wrapped = CollectionReference.of(ref.getKey(), collection, i);
-			arr[i] = this.contentHandler.readFromReference(operation, adapters, wrapped);
+			arr[i] = this.contentHandler.readFromReference(operation, wrapped);
 		}
 		return XData.make(new ArraySerializer(), serializer -> serializer.setData(arr));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void writeToReference(Operation operation, AdapterFactory adapters, Reference ref, Serializer<?> rawSerializer) {
+	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer) {
 		final Object currentData = ref.getValueHolder().get();
 		if (!(currentData instanceof final Collection collection)) {
 			throw new IllegalStateException("Field is not a collection");
@@ -54,7 +53,7 @@ public class CollectionHandler implements ReferenceHandler {
 		collection.clear();
 		for (Serializer<?> item : serializer.getData()) {
 			Holder itemHolder = new SimpleHolder();
-			this.contentHandler.writeToReference(operation, adapters, Reference.of(ref.getKey(), itemHolder), item);
+			this.contentHandler.writeToReference(operation, Reference.of(ref.getKey(), itemHolder), item);
 			collection.add(itemHolder.get());
 		}
 	}

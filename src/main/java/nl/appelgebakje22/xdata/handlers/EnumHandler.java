@@ -1,7 +1,6 @@
 package nl.appelgebakje22.xdata.handlers;
 
 import nl.appelgebakje22.xdata.Operation;
-import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.Reference;
@@ -16,14 +15,14 @@ public class EnumHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, AdapterFactory adapters, Reference ref) {
+	public Serializer<?> readFromReference(Operation operation, Reference ref) {
 		Object data = ref.getValueHolder().get();
 		return StringSerializer.of(((Enum<?>) data).name());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void writeToReference(Operation operation, AdapterFactory adapters, Reference ref, Serializer<?> rawSerializer) {
+	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer) {
 		StringSerializer serializer = this.testSerializer(rawSerializer, StringSerializer.class);
 		Enum<?> newValue = getEnum((Class<Enum>) ref.getKey().getRawField().getType(), serializer.getData());
 		ref.getValueHolder().set(newValue);

@@ -132,12 +132,7 @@ public class ManagedDataMap {
 		TableAdapter result = adapters.table();
 		this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
 			case FULL -> true;
-			case PARTIAL -> {
-				var key = entry.getValue();
-				var index = this.persistenceFields.getInt(key);
-				boolean enable = this.dirtyPersistenceFields.get(index);
-				yield enable;
-			}
+			case PARTIAL -> this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
 		}).forEach(entry -> {
 			Reference ref = getReference(entry.getValue());
 			BaseAdapter serializedRef = XDataSerializationUtils.writeRefToAdapter(operation, adapters, ref);

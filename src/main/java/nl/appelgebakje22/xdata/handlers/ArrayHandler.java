@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nl.appelgebakje22.xdata.Operation;
 import nl.appelgebakje22.xdata.XData;
-import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.ArrayReference;
@@ -27,7 +26,7 @@ public final class ArrayHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, AdapterFactory adapters, Reference ref) {
+	public Serializer<?> readFromReference(Operation operation, Reference ref) {
 		final Object currentData = ref.getValueHolder().get();
 		if (currentData == null || !currentData.getClass().isArray()) {
 			throw new IllegalStateException("Field %s is not an array".formatted(ref.getKey().getRawField()));
@@ -36,13 +35,13 @@ public final class ArrayHandler implements ReferenceHandler {
 		final Serializer<?>[] arr = new Serializer[length];
 		for (int i = 0; i < arr.length; ++i) {
 			final Reference wrapped = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
-			arr[i] = this.contentHandler.readFromReference(operation, adapters, wrapped);
+			arr[i] = this.contentHandler.readFromReference(operation, wrapped);
 		}
 		return ArraySerializer.of(arr);
 	}
 
 	@Override
-	public void writeToReference(Operation operation, AdapterFactory adapters, Reference ref, Serializer<?> rawSerializer) {
+	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer) {
 		Object currentData = ref.getValueHolder().get();
 		if (currentData != null && !currentData.getClass().isArray()) {
 			throw new IllegalStateException("Field is not an array");
@@ -54,7 +53,7 @@ public final class ArrayHandler implements ReferenceHandler {
 		}
 		for (int i = 0; i < Array.getLength(currentData); ++i) {
 			ArrayReference itemRef = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
-			this.contentHandler.writeToReference(operation, adapters, itemRef, serializer.getData()[i]);
+			this.contentHandler.writeToReference(operation, itemRef, serializer.getData()[i]);
 		}
 	}
 }

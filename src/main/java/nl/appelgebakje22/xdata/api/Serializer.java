@@ -1,32 +1,38 @@
 package nl.appelgebakje22.xdata.api;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.appelgebakje22.xdata.XDataRegister;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
-import nl.appelgebakje22.xdata.dummyclasses.RegistryFriendlyByteBuf;
+import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
+import nl.appelgebakje22.xdata.ref.Reference;
 import org.jetbrains.annotations.Nullable;
 
-public interface Serializer<T> {
+@Getter
+@Setter
+public abstract class Serializer<T> {
+
+	private T data;
+	private Reference ref;
 
 	@Nullable
-	BaseAdapter serialize(AdapterFactory adapters);
+	public abstract BaseAdapter serialize(AdapterFactory adapters);
 
-	void deserialize(AdapterFactory adapters, BaseAdapter adapter);
+	public abstract void deserialize(AdapterFactory adapters, BaseAdapter adapter);
 
-	void toNetwork(RegistryFriendlyByteBuf buf);
+	public abstract void toNetwork(NetworkAdapter network);
 
-	void fromNetwork(RegistryFriendlyByteBuf buf);
+	public abstract void fromNetwork(NetworkAdapter network);
 
-	T getData();
-
-	default <A extends BaseAdapter> A testAdapter(BaseAdapter adapter, Class<A> expectedType) {
+	protected <A extends BaseAdapter> A testAdapter(BaseAdapter adapter, Class<A> expectedType) {
 		if (expectedType.isAssignableFrom(adapter.getClass())) {
 			return expectedType.cast(adapter);
 		}
 		throw new IllegalArgumentException("Expected Adapter of type %s, got: %s".formatted(expectedType.getName(), adapter.getClass().getName()));
 	}
 
-	default int getSid() {
+	public final int getSid() {
 		return XDataRegister.getSerializerId(this);
 	}
 }

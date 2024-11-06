@@ -20,7 +20,6 @@ import nl.appelgebakje22.xdata.api.Checker;
 import nl.appelgebakje22.xdata.api.Copier;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
-import nl.appelgebakje22.xdata.api.SimpleSerializer;
 import nl.appelgebakje22.xdata.handlers.ArrayHandler;
 import nl.appelgebakje22.xdata.handlers.CollectionHandler;
 import nl.appelgebakje22.xdata.handlers.SimpleObjectHandler;
@@ -72,11 +71,11 @@ public final class XDataRegister {
 		register(serializerType, factory, handler, DEFAULT_PRIORITY);
 	}
 
-	public static <T, S extends SimpleSerializer<T>> void register(Class<S> serializerType, Supplier<S> factory, Class<T> valueType, boolean shallowEqualityCheck, int priority) {
+	public static <T, S extends Serializer<T>> void register(Class<S> serializerType, Supplier<S> factory, Class<T> valueType, boolean shallowEqualityCheck, int priority) {
 		register(serializerType, factory, new SimpleObjectHandler(valueType, shallowEqualityCheck, factory), priority);
 	}
 
-	public static <T, S extends SimpleSerializer<T>> void register(Class<S> serializerType, Supplier<S> factory, Class<T> valueType, boolean shallowEqualityCheck) {
+	public static <T, S extends Serializer<T>> void register(Class<S> serializerType, Supplier<S> factory, Class<T> valueType, boolean shallowEqualityCheck) {
 		register(serializerType, factory, valueType, shallowEqualityCheck, DEFAULT_PRIORITY);
 	}
 
