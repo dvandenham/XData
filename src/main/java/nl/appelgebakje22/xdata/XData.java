@@ -10,6 +10,7 @@ import nl.appelgebakje22.xdata.handlers.ByteHandler;
 import nl.appelgebakje22.xdata.handlers.CharHandler;
 import nl.appelgebakje22.xdata.handlers.DoubleHandler;
 import nl.appelgebakje22.xdata.handlers.FloatHandler;
+import nl.appelgebakje22.xdata.handlers.IManagedHandler;
 import nl.appelgebakje22.xdata.handlers.IntHandler;
 import nl.appelgebakje22.xdata.handlers.LongHandler;
 import nl.appelgebakje22.xdata.handlers.ShortHandler;
@@ -21,6 +22,7 @@ import nl.appelgebakje22.xdata.serializers.DoubleSerializer;
 import nl.appelgebakje22.xdata.serializers.FloatSerializer;
 import nl.appelgebakje22.xdata.serializers.IntSerializer;
 import nl.appelgebakje22.xdata.serializers.LongSerializer;
+import nl.appelgebakje22.xdata.serializers.NbtSerializer;
 import nl.appelgebakje22.xdata.serializers.ShortSerializer;
 
 public final class XData {
@@ -38,6 +40,8 @@ public final class XData {
 		XDataRegister.register(CharSerializer.class, CharSerializer::new, new CharHandler());
 
 		XDataRegister.register(ArraySerializer.class, ArraySerializer::new);
+
+		XDataRegister.register(NbtSerializer.class, NbtSerializer::new, new IManagedHandler());
 
 		XDataRegister.freeze();
 	}
