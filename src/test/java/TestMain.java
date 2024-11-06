@@ -28,8 +28,16 @@ public class TestMain implements IManaged {
 		var nbt = SNBTUtil.fromSNBT(input);
 		map.readAllData((CompoundTag) nbt, null);
 		String output = SNBTUtil.toSNBT(XData.make(new CompoundTag(), tag -> map.saveAllData(tag, null)));
+		System.out.println(map.hasDirtyPersistentFields());
 		System.out.println(input.equals(output));
-
+		System.out.println(map.hasDirtyPersistentFields());
+		main.test[2] = 100;
+		map.tick();
+		System.out.println(map.hasDirtyPersistentFields());
+		main.test2.add(false);
+		System.out.println(map.hasDirtyPersistentFields());
+		map.tick();
+		System.out.println(map.hasDirtyPersistentFields());
 		//		var nbt = XData.make(new CompoundTag(), t -> map.saveAllData(t, null));
 		//		System.out.println(nbt);
 		//		System.out.println(map.getReference(map.getPersistenceFields()[0]).getValueHolder().get());

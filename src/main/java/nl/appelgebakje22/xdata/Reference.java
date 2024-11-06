@@ -1,5 +1,6 @@
 package nl.appelgebakje22.xdata;
 
+import java.util.Collection;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +68,8 @@ public class Reference {
 	public static Reference of(ReferenceKey referenceKey, Holder valueHolder) {
 		if (valueHolder instanceof ReflectionHolder reflectionHolder && reflectionHolder.isPrimitive()) {
 			return new PrimitiveReference(referenceKey, valueHolder);
+		} else if (referenceKey.getRawField().getType().isArray() || Collection.class.isAssignableFrom(referenceKey.getRawField().getType())) {
+			return new GenericArrayOuterReference(referenceKey, valueHolder);
 		}
 		return new Reference(referenceKey, valueHolder);
 	}

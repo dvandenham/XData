@@ -16,6 +16,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import nl.appelgebakje22.xdata.api.Checker;
+import nl.appelgebakje22.xdata.api.Copier;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.handlers.ArrayHandler;
@@ -36,6 +38,11 @@ public final class XDataRegister {
 	private static final List<ReferenceHandler> HANDLERS_SORTED = new ArrayList<>();
 	private static final Object2IntMap<ReferenceHandler> HANDLER_TO_SERIALIZER_MAPPING = new Object2IntArrayMap<>();
 	private static final Object2ObjectMap<Class<?>, ReferenceHandler> HANDLER_TYPE_CACHE = new Object2ObjectArrayMap<>();
+
+	private static final List<Copier<?>> COPIERS = new ArrayList<>();
+	private static final Object2ObjectMap<Class<?>, Copier<?>> COPIER_TYPE_CACHE = new Object2ObjectArrayMap<>();
+	private static final List<Checker<?>> CHECKERS = new ArrayList<>();
+	private static final Object2ObjectMap<Class<?>, Checker<?>> CHECKER_TYPE_CACHE = new Object2ObjectArrayMap<>();
 
 	public static <T extends Serializer<?>> int register(Class<T> serializerType, Supplier<T> factory) {
 		if (INITIALIZED.get()) {
@@ -61,6 +68,20 @@ public final class XDataRegister {
 
 	public static <T extends Serializer<?>> void register(Class<T> serializerType, Supplier<T> factory, ReferenceHandler handler) {
 		register(serializerType, factory, handler, DEFAULT_PRIORITY);
+	}
+
+	public static void register(Copier<?> copier) {
+		if (INITIALIZED.get()) {
+			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(Copier.class.getName(), copier.getClass().getName()));
+		}
+		COPIERS.add(copier);
+	}
+
+	public static void register(Checker<?> checker) {
+		if (INITIALIZED.get()) {
+			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(Checker.class.getName(), checker.getClass().getName()));
+		}
+		CHECKERS.add(checker);
 	}
 
 	static void freeze() {
@@ -120,5 +141,17 @@ public final class XDataRegister {
 			throw new IllegalStateException("Cannot fetch %s during initialization!".formatted(ReferenceHandler.class.getName()));
 		}
 		return HANDLER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> HANDLERS_SORTED.stream().filter(entry -> entry.canHandle(clazz)).findFirst().orElse(null));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nullable
+	public static <T> Copier<T> getCopier(Class<T> clazz) {
+		return (Copier<T>) COPIER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> COPIERS.stream().filter(copier -> copier.canHandle(clazz)).findFirst().orElse(null));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nullable
+	public static <T> Checker<T> getChecker(Class<T> clazz) {
+		return (Checker<T>) CHECKER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> CHECKERS.stream().filter(checker -> checker.canHandle(clazz)).findFirst().orElse(null));
 	}
 }

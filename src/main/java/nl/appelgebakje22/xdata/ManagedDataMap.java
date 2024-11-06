@@ -80,9 +80,24 @@ public class ManagedDataMap {
 		this.dirtySyncFields.set(index, isDirty);
 	}
 
+	public void tick() {
+		this.references.values().forEach(Reference::tick);
+		if (hasDirtySyncFields()) {
+			//TODO SYNC
+		}
+	}
+
 	@Nullable
 	public Reference getReference(ReferenceKey field) {
 		return this.references.get(field);
+	}
+
+	public boolean hasDirtyPersistentFields() {
+		return !this.dirtyPersistenceFields.isEmpty();
+	}
+
+	public boolean hasDirtySyncFields() {
+		return !this.dirtySyncFields.isEmpty();
 	}
 
 	public void saveAllData(CompoundTag nbt, HolderLookup_Provider registries) {
