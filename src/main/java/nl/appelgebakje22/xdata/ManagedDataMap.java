@@ -40,16 +40,16 @@ public class ManagedDataMap {
 	private final Map<String, ReferenceKey> syncMapper;
 	private final BitSet dirtySyncFields;
 
-	public ManagedDataMap(IManaged managed) {
+	public ManagedDataMap(final IManaged managed) {
 		this.managed = managed;
-		this.fields = collectFields(managed.getClass());
+		this.fields = ManagedDataMap.collectFields(managed.getClass());
 
-		Map<ReferenceKey, Reference> referenceMap = new HashMap<>();
-		ArrayList<ReferenceKey> persistenceFieldList = new ArrayList<>();
-		ArrayList<ReferenceKey> syncFieldList = new ArrayList<>();
-		for (ReferenceKey field : this.fields) {
-			ReflectionHolder holder = ReflectionHolder.of(field.getRawField(), managed);
-			Reference reference = Reference.of(field, holder);
+		final Map<ReferenceKey, Reference> referenceMap = new HashMap<>();
+		final ArrayList<ReferenceKey> persistenceFieldList = new ArrayList<>();
+		final ArrayList<ReferenceKey> syncFieldList = new ArrayList<>();
+		for (final ReferenceKey field : this.fields) {
+			final ReflectionHolder holder = ReflectionHolder.of(field.getRawField(), managed);
+			final Reference reference = Reference.of(field, holder);
 			referenceMap.put(field, reference);
 			if (field.isPersisted()) {
 				persistenceFieldList.add(field);
@@ -60,20 +60,20 @@ public class ManagedDataMap {
 		}
 		this.references = Collections.unmodifiableMap(referenceMap);
 
-		Object2IntMap<ReferenceKey> persistenceFields = new Object2IntArrayMap<>();
+		final Object2IntMap<ReferenceKey> persistenceFields = new Object2IntArrayMap<>();
 		for (int i = 0; i < persistenceFieldList.size(); ++i) {
-			ReferenceKey refKey = persistenceFieldList.get(i);
-			Reference ref = this.references.get(refKey);
-			int finalI = i;
+			final ReferenceKey refKey = persistenceFieldList.get(i);
+			final Reference ref = this.references.get(refKey);
+			final int finalI = i;
 			ref.setPersistenceStateCallback(dirty -> this.onFieldPersistenceDirty(ref, finalI, dirty));
 			persistenceFields.put(refKey, i);
 		}
 		this.persistenceFields = Object2IntMaps.unmodifiable(persistenceFields);
-		Object2IntMap<ReferenceKey> syncFields = new Object2IntArrayMap<>();
+		final Object2IntMap<ReferenceKey> syncFields = new Object2IntArrayMap<>();
 		for (int i = 0; i < syncFieldList.size(); ++i) {
-			ReferenceKey refKey = syncFieldList.get(i);
-			Reference ref = this.references.get(refKey);
-			int finalI = i;
+			final ReferenceKey refKey = syncFieldList.get(i);
+			final Reference ref = this.references.get(refKey);
+			final int finalI = i;
 			ref.setSyncStateCallback(dirty -> this.onFieldSyncDirty(ref, finalI, dirty));
 			syncFields.put(refKey, i);
 		}
@@ -96,11 +96,11 @@ public class ManagedDataMap {
 		this.dirtySyncFields = new BitSet(this.syncFields.size());
 	}
 
-	private void onFieldPersistenceDirty(Reference reference, int index, boolean isDirty) {
+	private void onFieldPersistenceDirty(final Reference reference, final int index, final boolean isDirty) {
 		this.dirtyPersistenceFields.set(index, isDirty);
 	}
 
-	private void onFieldSyncDirty(Reference reference, int index, boolean isDirty) {
+	private void onFieldSyncDirty(final Reference reference, final int index, final boolean isDirty) {
 		this.dirtySyncFields.set(index, isDirty);
 	}
 
@@ -110,13 +110,13 @@ public class ManagedDataMap {
 
 	public void tick() {
 		this.references.values().forEach(Reference::tick);
-		if (hasDirtySyncFields()) {
+		if (this.hasDirtySyncFields()) {
 			//TODO SYNC
 		}
 	}
 
 	@Nullable
-	public Reference getReference(ReferenceKey field) {
+	public Reference getReference(final ReferenceKey field) {
 		return this.references.get(field);
 	}
 
@@ -128,14 +128,14 @@ public class ManagedDataMap {
 		return !this.dirtySyncFields.isEmpty();
 	}
 
-	public TableAdapter serialize(Operation operation, AdapterFactory adapters) {
-		TableAdapter result = adapters.table();
+	public TableAdapter serialize(final Operation operation, final AdapterFactory adapters) {
+		final TableAdapter result = adapters.table();
 		this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
 			case FULL -> true;
 			case PARTIAL -> this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
 		}).forEach(entry -> {
-			Reference ref = getReference(entry.getValue());
-			BaseAdapter serializedRef = XDataSerializationUtils.writeRefToAdapter(operation, adapters, ref);
+			final Reference ref = this.getReference(entry.getValue());
+			final BaseAdapter serializedRef = XDataSerializationUtils.writeRefToAdapter(operation, adapters, ref);
 			if (serializedRef != null) {
 				result.set(entry.getKey(), serializedRef);
 			}
@@ -144,26 +144,26 @@ public class ManagedDataMap {
 		return result;
 	}
 
-	public void deserialize(Operation operation, AdapterFactory adapters, TableAdapter table) {
-		for (String tagKey : table.getKeys()) {
-			ReferenceKey field = this.persistenceMapping.get(tagKey);
+	public void deserialize(final Operation operation, final AdapterFactory adapters, final TableAdapter table) {
+		for (final String tagKey : table.getKeys()) {
+			final ReferenceKey field = this.persistenceMapping.get(tagKey);
 			if (field == null) {
 				//TODO log
 				System.out.println("Cannot deserialize data for key " + tagKey + " since it has no mapping.");
 			} else {
-				Reference ref = getReference(field);
+				final Reference ref = this.getReference(field);
 				XDataSerializationUtils.readRefFromAdapter(operation, adapters, ref, table.get(tagKey));
 				ref.clearPersistenceMark();
 			}
 		}
 	}
 
-	private static ReferenceKey[] collectFields(Class<?> clazz) {
-		List<ReferenceKey> resultList = new ArrayList<>();
-		for (Field field : clazz.getDeclaredFields()) {
+	private static ReferenceKey[] collectFields(final Class<?> clazz) {
+		final List<ReferenceKey> resultList = new ArrayList<>();
+		for (final Field field : clazz.getDeclaredFields()) {
 			if (!Modifier.isStatic(field.getModifiers())) {
-				boolean persist = field.isAnnotationPresent(Persisted.class);
-				boolean synced = field.isAnnotationPresent(Synchronized.class);
+				final boolean persist = field.isAnnotationPresent(Persisted.class);
+				final boolean synced = field.isAnnotationPresent(Synchronized.class);
 				if (persist || synced) {
 					if (!XDataRegister.canHandleType(field.getGenericType())) {
 						throw new IllegalStateException("Field " + field + " is marked for XData but is not supported.");

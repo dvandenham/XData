@@ -15,22 +15,22 @@ public class TestMain implements IManaged {
 
 	private final ManagedDataMap map = new ManagedDataMap(this);
 	@Persisted
-	private int[] test = { 3, 2, 1 };
+	private final int[] test = { 3, 2, 1 };
 	@Persisted
-	private int test3 = 1;
+	private final int test3 = 1;
 	@Persisted
-	private List<Boolean> test2 = new ArrayList<>(Arrays.asList(false, false, true));
+	private final List<Boolean> test2 = new ArrayList<>(Arrays.asList(false, false, true));
 
-//	@Persisted
-//	private Managed2 managed2 = new Managed2();
+	//	@Persisted
+	//	private Managed2 managed2 = new Managed2();
 
-	public static void main(String[] args) throws IOException {
+	public static void main(final String[] args) throws IOException {
 		XData.init();
-		NbtAdapterFactory adapters = new NbtAdapterFactory();
-		TestMain main = new TestMain();
-		var map = main.getDataMap();
+		final NbtAdapterFactory adapters = new NbtAdapterFactory();
+		final TestMain main = new TestMain();
+		final var map = main.getDataMap();
 		map.tick();
-		String org = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(map.serialize(Operation.FULL, adapters)));
+		final String org = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(map.serialize(Operation.FULL, adapters)));
 		System.out.println(org);
 		//
 		//		map.serialize(Operation.PARTIAL, adapters);
@@ -38,22 +38,22 @@ public class TestMain implements IManaged {
 		//		main.test[1] = 10;
 		//		map.tick();
 		//		serialize(adapters, map);
-		var a = SNBTUtil.fromSNBT(org);
+		final var a = SNBTUtil.fromSNBT(org);
 		map.deserialize(Operation.FULL, adapters, (TableAdapter) NbtAdapterFactory.fromTag(adapters, a));
-		String org2 = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(map.serialize(Operation.FULL, adapters)));
+		final String org2 = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(map.serialize(Operation.FULL, adapters)));
 		System.out.println(org2);
 		System.out.println(org.equals(org2));
 	}
 
-	private static String serialize(NbtAdapterFactory adapters, ManagedDataMap map) throws IOException {
-		TableAdapter serialized = map.serialize(Operation.PARTIAL, adapters);
-		String s = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(serialized));
+	private static String serialize(final NbtAdapterFactory adapters, final ManagedDataMap map) throws IOException {
+		final TableAdapter serialized = map.serialize(Operation.PARTIAL, adapters);
+		final String s = SNBTUtil.toSNBT(NbtAdapterFactory.toTag(serialized));
 		System.out.println(s);
 		return s;
 	}
 
 	@Override
 	public ManagedDataMap getDataMap() {
-		return map;
+		return this.map;
 	}
 }

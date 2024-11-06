@@ -5,7 +5,7 @@ public class BaseBooleanAdapter implements BooleanAdapter {
 	private boolean value;
 
 	@Override
-	public void setBoolean(boolean value) {
+	public void setBoolean(final boolean value) {
 		this.value = value;
 	}
 
@@ -15,7 +15,7 @@ public class BaseBooleanAdapter implements BooleanAdapter {
 	}
 
 	@Override
-	public boolean getBoolean(boolean fallback) {
+	public boolean getBoolean(final boolean fallback) {
 		return this.value || fallback;
 	}
 }

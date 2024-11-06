@@ -13,25 +13,25 @@ public class SimpleObjectHandler implements ReferenceHandler {
 	private final boolean shallowEqualityCheck;
 	private final Supplier<? extends Serializer<?>> serializerFactory;
 
-	public SimpleObjectHandler(Class<?> typeClass, boolean shallowEqualityCheck, Supplier<? extends Serializer<?>> serializerFactory) {
+	public SimpleObjectHandler(final Class<?> typeClass, final boolean shallowEqualityCheck, final Supplier<? extends Serializer<?>> serializerFactory) {
 		this.typeClass = typeClass;
 		this.shallowEqualityCheck = shallowEqualityCheck;
 		this.serializerFactory = serializerFactory;
 	}
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return this.shallowEqualityCheck ? clazz.equals(this.typeClass) : this.typeClass.isAssignableFrom(clazz);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		return XData.make(this.serializerFactory.get(), serializer -> ((Serializer) serializer).setData(ref.getValueHolder().get()));
 	}
 
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> serializer) {
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
 		ref.getValueHolder().set(serializer.getData());
 	}
 }

@@ -24,15 +24,15 @@ public class ReferenceKey {
 	private final Lazy<String> persistenceKey;
 	private final Lazy<String> syncKey;
 
-	private ReferenceKey(String name, Field rawField, Type rawType) {
+	private ReferenceKey(final String name, final Field rawField, final Type rawType) {
 		rawField.setAccessible(true);
 		this.name = name;
 		this.isPersisted = rawField.isAnnotationPresent(Persisted.class);
 		this.isSynchronized = rawField.isAnnotationPresent(Synchronized.class);
 		this.rawField = rawField;
 		this.rawType = rawType;
-		this.persistenceKey = Lazy.of(() -> isPersisted ? getNotEmptyOrFallback(rawField.getAnnotation(Persisted.class).key(), name) : null);
-		this.syncKey = Lazy.of(() -> isSynchronized ? getNotEmptyOrFallback(rawField.getAnnotation(Synchronized.class).key(), name) : null);
+		this.persistenceKey = Lazy.of(() -> this.isPersisted ? ReferenceKey.getNotEmptyOrFallback(rawField.getAnnotation(Persisted.class).key(), name) : null);
+		this.syncKey = Lazy.of(() -> this.isSynchronized ? ReferenceKey.getNotEmptyOrFallback(rawField.getAnnotation(Synchronized.class).key(), name) : null);
 	}
 
 	@Nullable
@@ -45,11 +45,11 @@ public class ReferenceKey {
 		return this.syncKey.get();
 	}
 
-	private static String getNotEmptyOrFallback(@Nullable String str, String fallback) {
+	private static String getNotEmptyOrFallback(@Nullable final String str, final String fallback) {
 		return str == null || str.isBlank() ? fallback : str.trim();
 	}
 
-	public static ReferenceKey of(Field field) {
+	public static ReferenceKey of(final Field field) {
 		return new ReferenceKey(field.getName(), field, field.getGenericType());
 	}
 }

@@ -13,27 +13,27 @@ import org.jetbrains.annotations.Nullable;
 public class UUIDSerializer extends Serializer<UUID> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofString(getData().toString());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofString(this.getData().toString());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		StringAdapter stringAdapter = this.testAdapter(adapter, StringAdapter.class);
-		setData(UUID.fromString(stringAdapter.getString()));
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final StringAdapter stringAdapter = this.testAdapter(adapter, StringAdapter.class);
+		this.setData(UUID.fromString(stringAdapter.getString()));
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData().toString());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData().toString());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(UUID.fromString(network.readString()));
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(UUID.fromString(network.readString()));
 	}
 
-	public static UUIDSerializer of(UUID data) {
+	public static UUIDSerializer of(final UUID data) {
 		return XData.make(new UUIDSerializer(), serializer -> serializer.setData(data));
 	}
 }

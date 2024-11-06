@@ -4,7 +4,7 @@ public class BaseShortAdapter extends BaseNumberAdapter<Short> implements ShortA
 
 	private short value;
 
-	public void setNumber(short number) {
+	public void setNumber(final short number) {
 		this.value = number;
 	}
 

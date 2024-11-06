@@ -1,6 +1,5 @@
 package nl.appelgebakje22.xdata.serializers;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.XDataRegister;
@@ -18,14 +17,14 @@ import org.jetbrains.annotations.Nullable;
 public class ArraySerializer extends Serializer<Serializer<?>[]> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		ArrayAdapter array = adapters.array();
-		Reference[] arrayRefs = makeRefs(ref, getData().length);
-		for (int i = 0; i < getData().length; ++i) {
-			Serializer<?> serializer = this.getData()[i];
-			TableAdapter entry = array.addTable();
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		final ArrayAdapter array = adapters.array();
+		final Reference[] arrayRefs = ArraySerializer.makeRefs(ref, this.getData().length);
+		for (int i = 0; i < this.getData().length; ++i) {
+			final Serializer<?> serializer = this.getData()[i];
+			final TableAdapter entry = array.addTable();
 			entry.set("sid", serializer.getSid());
-			BaseAdapter dataAdapter = serializer.serialize(arrayRefs[i], adapters);
+			final BaseAdapter dataAdapter = serializer.serialize(arrayRefs[i], adapters);
 			if (dataAdapter != null) {
 				entry.set("dat", dataAdapter);
 			}
@@ -34,12 +33,12 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		ArrayAdapter array = this.testAdapter(adapter, ArrayAdapter.class);
-		Serializer<?>[] arr = new Serializer[array.size()];
-		Reference[] arrayRefs = makeRefs(ref, arr.length);
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final ArrayAdapter array = this.testAdapter(adapter, ArrayAdapter.class);
+		final Serializer<?>[] arr = new Serializer[array.size()];
+		final Reference[] arrayRefs = ArraySerializer.makeRefs(ref, arr.length);
 		for (int i = 0; i < arr.length; ++i) {
-			TableAdapter entry = this.testAdapter(array.get(i), TableAdapter.class);
+			final TableAdapter entry = this.testAdapter(array.get(i), TableAdapter.class);
 			arr[i] = XDataRegister.getSerializerById(entry.getInt("sid"));
 			if (arr[i] == null) {
 				throw new IllegalStateException("Could not create %s with id %s".formatted(Serializer.class.getName(), entry.getInt("sid")));
@@ -53,22 +52,22 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		Reference[] arrayRefs = makeRefs(ref, this.getData().length);
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		final Reference[] arrayRefs = ArraySerializer.makeRefs(ref, this.getData().length);
 		network.write(this.getData().length);
 		for (int i = 0; i < this.getData().length; ++i) {
-			Serializer<?> serializer = this.getData()[i];
+			final Serializer<?> serializer = this.getData()[i];
 			network.write(serializer.getSid());
 			serializer.toNetwork(arrayRefs[i], network);
 		}
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		Serializer<?>[] arr = new Serializer[network.readInt()];
-		Reference[] arrayRefs = makeRefs(ref, arr.length);
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		final Serializer<?>[] arr = new Serializer[network.readInt()];
+		final Reference[] arrayRefs = ArraySerializer.makeRefs(ref, arr.length);
 		for (int i = 0; i < arr.length; ++i) {
-			int sid = network.readInt();
+			final int sid = network.readInt();
 			arr[i] = XDataRegister.getSerializerById(sid);
 			if (arr[i] == null) {
 				throw new IllegalStateException("Could not create %s with id %s".formatted(Serializer.class.getName(), sid));
@@ -78,19 +77,19 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 		this.setData(arr);
 	}
 
-	private static Reference[] makeRefs(Reference arrayRef, int length) {
-		Class<?> fieldType = arrayRef.getKey().getRawField().getType();
+	private static Reference[] makeRefs(final Reference arrayRef, final int length) {
+		final Class<?> fieldType = arrayRef.getKey().getRawField().getType();
 		if (fieldType.isArray()) {
-			Object array = arrayRef.getValueHolder().get();
-			Class<?> arrayType = fieldType.getComponentType();
-			Reference[] result = new Reference[length];
+			final Object array = arrayRef.getValueHolder().get();
+			final Class<?> arrayType = fieldType.getComponentType();
+			final Reference[] result = new Reference[length];
 			for (int i = 0; i < result.length; ++i) {
 				result[i] = ArrayReference.of(arrayRef.getKey(), array, i, arrayType);
 			}
 			return result;
 		} else if (Collection.class.isAssignableFrom(fieldType)) {
-			Collection<?> collection = (Collection<?>) arrayRef.getValueHolder().get();
-			Reference[] result = new Reference[length];
+			final Collection<?> collection = (Collection<?>) arrayRef.getValueHolder().get();
+			final Reference[] result = new Reference[length];
 			for (int i = 0; i < result.length; ++i) {
 				result[i] = CollectionReference.of(arrayRef.getKey(), collection, i);
 			}
@@ -100,7 +99,7 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 		}
 	}
 
-	public static ArraySerializer of(Serializer<?>[] data) {
+	public static ArraySerializer of(final Serializer<?>[] data) {
 		return XData.make(new ArraySerializer(), serializer -> serializer.setData(data));
 	}
 }

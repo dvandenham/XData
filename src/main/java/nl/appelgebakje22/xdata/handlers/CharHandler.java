@@ -9,18 +9,18 @@ import nl.appelgebakje22.xdata.serializers.CharSerializer;
 public class CharHandler implements ReferenceHandler {
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return clazz == char.class || clazz == Character.class;
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		return CharSerializer.of((char) ref.getValueHolder().get());
 	}
 
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> serializer) {
-		CharSerializer s = this.testSerializer(serializer, CharSerializer.class);
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
+		final CharSerializer s = this.testSerializer(serializer, CharSerializer.class);
 		ref.getValueHolder().set(s.getData());
 	}
 }

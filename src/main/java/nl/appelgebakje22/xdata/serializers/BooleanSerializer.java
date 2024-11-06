@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class BooleanSerializer extends Serializer<Boolean> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofBoolean(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofBoolean(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		BooleanAdapter booleanAdapter = this.testAdapter(adapter, BooleanAdapter.class);
-		setData(booleanAdapter.getBoolean());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final BooleanAdapter booleanAdapter = this.testAdapter(adapter, BooleanAdapter.class);
+		this.setData(booleanAdapter.getBoolean());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readBoolean());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readBoolean());
 	}
 
-	public static BooleanSerializer of(boolean data) {
+	public static BooleanSerializer of(final boolean data) {
 		return XData.make(new BooleanSerializer(), serializer -> serializer.setData(data));
 	}
 }

@@ -9,18 +9,18 @@ import nl.appelgebakje22.xdata.serializers.DoubleSerializer;
 public class DoubleHandler implements ReferenceHandler {
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return clazz == double.class || clazz == Double.class;
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		return DoubleSerializer.of((double) ref.getValueHolder().get());
 	}
 
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> serializer) {
-		DoubleSerializer s = this.testSerializer(serializer, DoubleSerializer.class);
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
+		final DoubleSerializer s = this.testSerializer(serializer, DoubleSerializer.class);
 		ref.getValueHolder().set(s.getData());
 	}
 }

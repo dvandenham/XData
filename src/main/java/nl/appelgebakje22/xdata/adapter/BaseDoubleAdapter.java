@@ -4,7 +4,7 @@ public class BaseDoubleAdapter extends BaseNumberAdapter<Double> implements Doub
 
 	private double value;
 
-	public void setNumber(double number) {
+	public void setNumber(final double number) {
 		this.value = number;
 	}
 

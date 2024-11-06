@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class FloatSerializer extends Serializer<Float> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofFloat(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofFloat(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
-		setData(numberAdapter.getFloat());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
+		this.setData(numberAdapter.getFloat());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readFloat());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readFloat());
 	}
 
-	public static FloatSerializer of(float data) {
+	public static FloatSerializer of(final float data) {
 		return XData.make(new FloatSerializer(), serializer -> serializer.setData(data));
 	}
 }

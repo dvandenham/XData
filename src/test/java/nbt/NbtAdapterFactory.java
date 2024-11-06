@@ -38,47 +38,47 @@ import org.jetbrains.annotations.Nullable;
 public class NbtAdapterFactory implements AdapterFactory {
 
 	@Override
-	public BooleanAdapter ofBoolean(boolean value) {
+	public BooleanAdapter ofBoolean(final boolean value) {
 		return XData.make(new BaseBooleanAdapter(), adapter -> adapter.setBoolean(value));
 	}
 
 	@Override
-	public ByteAdapter ofByte(byte value) {
+	public ByteAdapter ofByte(final byte value) {
 		return XData.make(new NbtByteAdapter(), adapter -> adapter.setNumber(value));
 	}
 
 	@Override
-	public ShortAdapter ofShort(short value) {
+	public ShortAdapter ofShort(final short value) {
 		return XData.make(new BaseShortAdapter(), adapter -> adapter.setNumber(value));
 	}
 
 	@Override
-	public IntAdapter ofInt(int value) {
+	public IntAdapter ofInt(final int value) {
 		return XData.make(new BaseIntAdapter(), adapter -> adapter.setNumber(value));
 	}
 
 	@Override
-	public LongAdapter ofLong(long value) {
+	public LongAdapter ofLong(final long value) {
 		return XData.make(new BaseLongAdapter(), adapter -> adapter.setNumber(value));
 	}
 
 	@Override
-	public FloatAdapter ofFloat(float value) {
+	public FloatAdapter ofFloat(final float value) {
 		return XData.make(new BaseFloatAdapter(), adapter -> adapter.setNumber(value));
 	}
 
 	@Override
-	public DoubleAdapter ofDouble(double value) {
+	public DoubleAdapter ofDouble(final double value) {
 		return XData.make(new BaseDoubleAdapter(), adapter -> adapter.setNumber(value));
 	}
 
 	@Override
-	public CharAdapter ofChar(char value) {
+	public CharAdapter ofChar(final char value) {
 		return XData.make(new BaseCharAdapter(), adapter -> adapter.setChar(value));
 	}
 
 	@Override
-	public StringAdapter ofString(@Nullable String value) {
+	public StringAdapter ofString(@Nullable final String value) {
 		return XData.make(new NbtStringAdapter(), adapter -> adapter.setString(value));
 	}
 
@@ -92,38 +92,38 @@ public class NbtAdapterFactory implements AdapterFactory {
 		return new NbtTableAdapter(this);
 	}
 
-	public static BaseAdapter fromTag(AdapterFactory adapters, Tag tag) {
+	public static BaseAdapter fromTag(final AdapterFactory adapters, final Tag tag) {
 		return switch (tag) {
-			case ByteTag byteTag -> adapters.ofByte(byteTag.asByte());
-			case ShortTag shortTag -> adapters.ofShort(shortTag.asShort());
-			case IntTag intTag -> adapters.ofInt(intTag.asInt());
-			case LongTag longTag -> adapters.ofLong(longTag.asLong());
-			case FloatTag floatTag -> adapters.ofFloat(floatTag.asFloat());
-			case DoubleTag doubleTag -> adapters.ofDouble(doubleTag.asDouble());
-			case StringTag stringTag -> adapters.ofString(stringTag.getValue());
-			case CompoundTag compoundTag -> NbtTableAdapter.fromTag(adapters, compoundTag);
-			case ListTag listTag -> NbtArrayAdapter.fromTag(adapters, listTag);
+			case final ByteTag byteTag -> adapters.ofByte(byteTag.asByte());
+			case final ShortTag shortTag -> adapters.ofShort(shortTag.asShort());
+			case final IntTag intTag -> adapters.ofInt(intTag.asInt());
+			case final LongTag longTag -> adapters.ofLong(longTag.asLong());
+			case final FloatTag floatTag -> adapters.ofFloat(floatTag.asFloat());
+			case final DoubleTag doubleTag -> adapters.ofDouble(doubleTag.asDouble());
+			case final StringTag stringTag -> adapters.ofString(stringTag.getValue());
+			case final CompoundTag compoundTag -> NbtTableAdapter.fromTag(adapters, compoundTag);
+			case final ListTag listTag -> NbtArrayAdapter.fromTag(adapters, listTag);
 			case null -> new NullTypeAdapter();
 			default -> UnknownTypeAdapter.of(tag);
 		};
 	}
 
 	@Nullable
-	public static Tag toTag(BaseAdapter adapter) {
+	public static Tag toTag(final BaseAdapter adapter) {
 		return switch (adapter) {
-			case BooleanAdapter booleanAdapter -> new ByteTag(booleanAdapter.getBoolean());
-			case ByteAdapter byteAdapter -> new ByteTag(byteAdapter.getByte());
-			case ShortAdapter shortAdapter -> new ShortTag(shortAdapter.getShort());
-			case IntAdapter intAdapter -> new IntTag(intAdapter.getInt());
-			case LongAdapter longAdapter -> new LongTag(longAdapter.getLong());
-			case FloatAdapter floatAdapter -> new FloatTag(floatAdapter.getFloat());
-			case DoubleAdapter doubleAdapter -> new DoubleTag(doubleAdapter.getDouble());
-			case CharAdapter charAdapter -> new StringTag(String.valueOf(charAdapter.getChar()));
-			case StringAdapter stringAdapter -> new StringTag(stringAdapter.getString());
-			case ArrayAdapter arrayAdapter -> NbtArrayAdapter.toTag(arrayAdapter);
-			case TableAdapter tableAdapter -> NbtTableAdapter.toTag(tableAdapter);
-			case NullTypeAdapter nullAdapter -> null;
-			case UnknownTypeAdapter unknown -> unknown.get() instanceof Tag tag ? tag : null;
+			case final BooleanAdapter booleanAdapter -> new ByteTag(booleanAdapter.getBoolean());
+			case final ByteAdapter byteAdapter -> new ByteTag(byteAdapter.getByte());
+			case final ShortAdapter shortAdapter -> new ShortTag(shortAdapter.getShort());
+			case final IntAdapter intAdapter -> new IntTag(intAdapter.getInt());
+			case final LongAdapter longAdapter -> new LongTag(longAdapter.getLong());
+			case final FloatAdapter floatAdapter -> new FloatTag(floatAdapter.getFloat());
+			case final DoubleAdapter doubleAdapter -> new DoubleTag(doubleAdapter.getDouble());
+			case final CharAdapter charAdapter -> new StringTag(String.valueOf(charAdapter.getChar()));
+			case final StringAdapter stringAdapter -> new StringTag(stringAdapter.getString());
+			case final ArrayAdapter arrayAdapter -> NbtArrayAdapter.toTag(arrayAdapter);
+			case final TableAdapter tableAdapter -> NbtTableAdapter.toTag(tableAdapter);
+			case final NullTypeAdapter nullAdapter -> null;
+			case final UnknownTypeAdapter unknown -> unknown.get() instanceof final Tag tag ? tag : null;
 			default -> throw new IllegalStateException("Unexpected value: " + adapter);
 		};
 	}

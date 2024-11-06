@@ -9,7 +9,7 @@ public abstract class ArrayHolder implements Holder {
 	private ArrayHolder() {
 	}
 
-	public static ArrayHolder of(Object array, int index, Class<?> c) {
+	public static ArrayHolder of(final Object array, final int index, final Class<?> c) {
 		if (c == boolean.class) {
 			return new ArrayHolder() {
 
@@ -19,7 +19,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setBoolean(array, index, (boolean) object);
 				}
 			};
@@ -32,7 +32,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setByte(array, index, (byte) object);
 				}
 			};
@@ -45,7 +45,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setShort(array, index, (short) object);
 				}
 			};
@@ -58,7 +58,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setInt(array, index, (int) object);
 				}
 			};
@@ -71,7 +71,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setLong(array, index, (long) object);
 				}
 			};
@@ -84,7 +84,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setFloat(array, index, (float) object);
 				}
 			};
@@ -97,7 +97,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setDouble(array, index, (double) object);
 				}
 			};
@@ -110,7 +110,7 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
+				public void set(@Nullable final Object object) {
 					Array.setChar(array, index, (char) object);
 				}
 			};
@@ -123,8 +123,8 @@ public abstract class ArrayHolder implements Holder {
 				}
 
 				@Override
-				public void set(@Nullable Object object) {
-					Array.set(array, index, (Boolean) object);
+				public void set(@Nullable final Object object) {
+					Array.set(array, index, object);
 				}
 			};
 		}

@@ -24,7 +24,7 @@ public abstract class Serializer<T> {
 
 	public abstract void fromNetwork(Reference ref, NetworkAdapter network);
 
-	protected <A extends BaseAdapter> A testAdapter(BaseAdapter adapter, Class<A> expectedType) {
+	protected <A extends BaseAdapter> A testAdapter(final BaseAdapter adapter, final Class<A> expectedType) {
 		if (expectedType.isAssignableFrom(adapter.getClass())) {
 			return expectedType.cast(adapter);
 		}

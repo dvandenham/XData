@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class IntSerializer extends Serializer<Integer> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofInt(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofInt(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
-		setData(numberAdapter.getInt());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
+		this.setData(numberAdapter.getInt());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readInt());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readInt());
 	}
 
-	public static IntSerializer of(int data) {
+	public static IntSerializer of(final int data) {
 		return XData.make(new IntSerializer(), serializer -> serializer.setData(data));
 	}
 }

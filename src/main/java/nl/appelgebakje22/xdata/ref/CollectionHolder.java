@@ -11,18 +11,18 @@ public class CollectionHolder implements Holder {
 	private final Collection<?> collection;
 	private final int index;
 
-	CollectionHolder(Collection<?> collection, int index) {
+	CollectionHolder(final Collection<?> collection, final int index) {
 		this.collection = collection;
 		this.index = index;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void set(@Nullable Object object) {
-		if (this.collection instanceof List list) {
+	public void set(@Nullable final Object object) {
+		if (this.collection instanceof final List list) {
 			list.set(this.index, object);
 		} else {
-			Iterator<?> iterator = this.collection.iterator();
+			final Iterator<?> iterator = this.collection.iterator();
 			for (int i = 0; i < this.index; ++i) {
 				iterator.next();
 			}
@@ -32,10 +32,10 @@ public class CollectionHolder implements Holder {
 
 	@Override
 	public @Nullable Object get() {
-		if (this.collection instanceof List<?> list) {
+		if (this.collection instanceof final List<?> list) {
 			return list.get(this.index);
 		} else {
-			Iterator<?> iterator = this.collection.iterator();
+			final Iterator<?> iterator = this.collection.iterator();
 			for (int i = 0; i < this.index; ++i) {
 				iterator.next();
 			}

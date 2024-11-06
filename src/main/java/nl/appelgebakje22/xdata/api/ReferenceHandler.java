@@ -11,7 +11,7 @@ public interface ReferenceHandler {
 
 	void writeToReference(Operation operation, Reference ref, Serializer<?> serializer);
 
-	default <T extends Serializer<?>> T testSerializer(Serializer<?> serializer, Class<T> expectedType) {
+	default <T extends Serializer<?>> T testSerializer(final Serializer<?> serializer, final Class<T> expectedType) {
 		if (expectedType.isAssignableFrom(serializer.getClass())) {
 			return expectedType.cast(serializer);
 		}

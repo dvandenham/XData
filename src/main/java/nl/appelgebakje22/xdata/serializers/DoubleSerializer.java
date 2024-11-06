@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class DoubleSerializer extends Serializer<Double> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofDouble(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofDouble(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
-		setData(numberAdapter.getDouble());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
+		this.setData(numberAdapter.getDouble());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readDouble());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readDouble());
 	}
 
-	public static DoubleSerializer of(double data) {
+	public static DoubleSerializer of(final double data) {
 		return XData.make(new DoubleSerializer(), serializer -> serializer.setData(data));
 	}
 }

@@ -11,6 +11,6 @@ public class Managed2 implements IManaged {
 
 	@Override
 	public ManagedDataMap getDataMap() {
-		return map;
+		return this.map;
 	}
 }

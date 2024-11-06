@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class CharSerializer extends Serializer<Character> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofChar(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofChar(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		CharAdapter charAdapter = this.testAdapter(adapter, CharAdapter.class);
-		setData(charAdapter.getChar());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final CharAdapter charAdapter = this.testAdapter(adapter, CharAdapter.class);
+		this.setData(charAdapter.getChar());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readChar());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readChar());
 	}
 
-	public static CharSerializer of(char data) {
+	public static CharSerializer of(final char data) {
 		return XData.make(new CharSerializer(), serializer -> serializer.setData(data));
 	}
 }

@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 public class XDataSerializationUtils {
 
 	@Nullable
-	public static BaseAdapter writeRefToAdapter(Operation operation, AdapterFactory adapters, Reference ref) {
-		ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
+	public static BaseAdapter writeRefToAdapter(final Operation operation, final AdapterFactory adapters, final Reference ref) {
+		final ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
 		if (handler == null) {
 			//TODO logging
 			System.out.printf("Cannot serialize field %s because no matching %s was registered%n", ref.getKey().getRawField(), ReferenceHandler.class.getName());
@@ -22,8 +22,8 @@ public class XDataSerializationUtils {
 		return serializer.serialize(ref, adapters);
 	}
 
-	public static void readRefFromAdapter(Operation operation, AdapterFactory adapters, Reference ref, BaseAdapter adapter) {
-		ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
+	public static void readRefFromAdapter(final Operation operation, final AdapterFactory adapters, final Reference ref, final BaseAdapter adapter) {
+		final ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
 		if (handler == null) {
 			//TODO logging
 			System.out.printf("Cannot deserialize field %s because no matching %s was registered%n", ref.getKey().getRawField(), ReferenceHandler.class.getName());
@@ -34,8 +34,8 @@ public class XDataSerializationUtils {
 		handler.writeToReference(operation, ref, serializer);
 	}
 
-	public static void writeRefToNetwork(Operation operation, NetworkAdapter network, Reference ref) {
-		ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
+	public static void writeRefToNetwork(final Operation operation, final NetworkAdapter network, final Reference ref) {
+		final ReferenceHandler handler = XDataRegister.getHandler(ref.getKey().getRawType());
 		if (handler == null) {
 			//TODO logging
 			System.out.printf("Cannot serialize field %s because no matching %s was registered%n", ref.getKey().getRawField(), ReferenceHandler.class.getName());

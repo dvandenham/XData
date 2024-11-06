@@ -9,13 +9,13 @@ public class Lazy<T> {
 	private T value;
 	private boolean loaded;
 
-	private Lazy(Supplier<T> provider) {
+	private Lazy(final Supplier<T> provider) {
 		this.provider = provider;
 	}
 
 	public T get() {
 		synchronized (this.lock) {
-			if (!loaded && this.provider != null) {
+			if (!this.loaded && this.provider != null) {
 				this.loaded = true;
 				this.value = this.provider.get();
 			}
@@ -23,11 +23,11 @@ public class Lazy<T> {
 		}
 	}
 
-	public static <T> Lazy<T> of(Supplier<T> provider) {
+	public static <T> Lazy<T> of(final Supplier<T> provider) {
 		return new Lazy<>(provider);
 	}
 
-	public static <T> Lazy<T> of(T value) {
+	public static <T> Lazy<T> of(final T value) {
 		return new Lazy<>(() -> value);
 	}
 }

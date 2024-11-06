@@ -4,7 +4,7 @@ public class BaseLongAdapter extends BaseNumberAdapter<Long> implements LongAdap
 
 	private long value;
 
-	public void setNumber(long number) {
+	public void setNumber(final long number) {
 		this.value = number;
 	}
 

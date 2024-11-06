@@ -16,22 +16,22 @@ public class GenericArrayOuterReference extends Reference {
 	private Object lastValue;
 	private int lastLength;
 
-	GenericArrayOuterReference(ReferenceKey key, Holder valueHolder) {
+	GenericArrayOuterReference(final ReferenceKey key, final Holder valueHolder) {
 		super(key, valueHolder);
 		this.isArray = key.getRawField().getType().isArray();
-		Object currentValue = valueHolder.get();
+		final Object currentValue = valueHolder.get();
 		if (currentValue != null) {
-			this.lastValue = cloneGenericArray(currentValue, this.isArray);
+			this.lastValue = GenericArrayOuterReference.cloneGenericArray(currentValue, this.isArray);
 			this.lastLength = Array.getLength(this.lastLength);
 		}
 	}
 
 	@Override
 	public void tick() {
-		Object currentValue = getValueHolder().get();
-		if ((currentValue == null && this.lastValue != null) || (currentValue != null && this.lastValue == null) || (this.lastValue != null && hasChanged(currentValue))) {
+		final Object currentValue = this.getValueHolder().get();
+		if ((currentValue == null && this.lastValue != null) || (currentValue != null && this.lastValue == null) || (this.lastValue != null && this.hasChanged(currentValue))) {
 			if (currentValue != null) {
-				this.lastValue = cloneGenericArray(currentValue, this.isArray);
+				this.lastValue = GenericArrayOuterReference.cloneGenericArray(currentValue, this.isArray);
 				this.lastLength = Array.getLength(this.lastValue);
 			} else {
 				this.lastValue = null;
@@ -42,8 +42,8 @@ public class GenericArrayOuterReference extends Reference {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected boolean hasChanged(Object newValue) {
-		if (isArray) {
+	protected boolean hasChanged(final Object newValue) {
+		if (this.isArray) {
 			if (Array.getLength(newValue) != this.lastLength) {
 				this.markDirty();
 				this.dirtyElements.clear();
@@ -52,14 +52,14 @@ public class GenericArrayOuterReference extends Reference {
 			boolean hasChanged = false;
 			for (int i = 0; i < this.lastLength; ++i) {
 				if (!XData.isEqual(Array.get(this.lastValue, i), Array.get(newValue, i))) {
-					markDirty();
-					dirtyElements.add(i);
+					this.markDirty();
+					this.dirtyElements.add(i);
 					hasChanged = true;
 				}
 			}
 			return hasChanged;
 		}
-		Collection c = (Collection) newValue;
+		final Collection c = (Collection) newValue;
 		if (c.size() != this.lastLength) {
 			this.markDirty();
 			this.dirtyElements.clear();
@@ -67,10 +67,10 @@ public class GenericArrayOuterReference extends Reference {
 		}
 		int i = 0;
 		boolean hasChanged = false;
-		for (Object item : c) {
+		for (final Object item : c) {
 			if (!XData.isEqual(Array.get(this.lastValue, i++), item)) {
-				markDirty();
-				dirtyElements.add(i);
+				this.markDirty();
+				this.dirtyElements.add(i);
 				hasChanged = true;
 			}
 		}
@@ -78,30 +78,30 @@ public class GenericArrayOuterReference extends Reference {
 	}
 
 	@SuppressWarnings({ "SuspiciousSystemArraycopy", "rawtypes", "unchecked" })
-	private static Object cloneGenericArray(Object array, boolean isArray) {
+	private static Object cloneGenericArray(final Object array, final boolean isArray) {
 		if (isArray) {
-			Class<?> componentType = array.getClass().getComponentType();
+			final Class<?> componentType = array.getClass().getComponentType();
 			if (componentType.isPrimitive()) {
-				Object newArray = Array.newInstance(componentType, Array.getLength(array));
+				final Object newArray = Array.newInstance(componentType, Array.getLength(array));
 				System.arraycopy(array, 0, newArray, 0, Array.getLength(newArray));
 				return newArray;
 			}
-			Object[] newArray = new Object[Array.getLength(array)];
+			final Object[] newArray = new Object[Array.getLength(array)];
 			for (int i = 0; i < newArray.length; ++i) {
-				Object item = Array.get(array, i);
+				final Object item = Array.get(array, i);
 				if (item != null) {
-					Copier copier = XDataRegister.getCopier(item.getClass());
+					final Copier copier = XDataRegister.getCopier(item.getClass());
 					newArray[i] = copier != null ? copier.copy(item) : item;
 				}
 			}
 			return newArray;
 		}
-		Collection c = (Collection) array;
-		Object[] result = new Object[c.size()];
+		final Collection c = (Collection) array;
+		final Object[] result = new Object[c.size()];
 		int i = 0;
-		for (Object item : c) {
+		for (final Object item : c) {
 			if (item != null) {
-				Copier copier = XDataRegister.getCopier(item.getClass());
+				final Copier copier = XDataRegister.getCopier(item.getClass());
 				result[i++] = copier != null ? copier.copy(item) : item;
 			}
 		}

@@ -6,7 +6,7 @@ public class UnknownTypeAdapter implements BaseAdapter {
 
 	private Object value;
 
-	public void set(Object value) {
+	public void set(final Object value) {
 		if (value == null) {
 			throw new IllegalStateException("Cannot set null as value! Use an %s instead!".formatted(NullTypeAdapter.class));
 		}
@@ -17,11 +17,11 @@ public class UnknownTypeAdapter implements BaseAdapter {
 		return this.value;
 	}
 
-	public Object getOrDefault(Object fallback) {
+	public Object getOrDefault(final Object fallback) {
 		return this.value != null ? this.value : fallback;
 	}
 
-	public static UnknownTypeAdapter of(Object data) {
+	public static UnknownTypeAdapter of(final Object data) {
 		return XData.make(new UnknownTypeAdapter(), adapter -> adapter.set(data));
 	}
 }

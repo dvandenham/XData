@@ -10,21 +10,21 @@ import org.jetbrains.annotations.Nullable;
 public class EnumHandler implements ReferenceHandler {
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return clazz.isEnum();
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
-		Object data = ref.getValueHolder().get();
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
+		final Object data = ref.getValueHolder().get();
 		return StringSerializer.of(((Enum<?>) data).name());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer) {
-		StringSerializer serializer = this.testSerializer(rawSerializer, StringSerializer.class);
-		Enum<?> newValue = getEnum((Class<Enum>) ref.getKey().getRawField().getType(), serializer.getData());
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> rawSerializer) {
+		final StringSerializer serializer = this.testSerializer(rawSerializer, StringSerializer.class);
+		final Enum<?> newValue = EnumHandler.getEnum((Class<Enum>) ref.getKey().getRawField().getType(), serializer.getData());
 		ref.getValueHolder().set(newValue);
 	}
 

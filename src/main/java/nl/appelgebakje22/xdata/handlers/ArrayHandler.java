@@ -21,12 +21,12 @@ public final class ArrayHandler implements ReferenceHandler {
 	private final Class<?> contentType;
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return clazz.isArray();
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		final Object currentData = ref.getValueHolder().get();
 		if (currentData == null || !currentData.getClass().isArray()) {
 			throw new IllegalStateException("Field %s is not an array".formatted(ref.getKey().getRawField()));
@@ -41,18 +41,18 @@ public final class ArrayHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer) {
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> rawSerializer) {
 		Object currentData = ref.getValueHolder().get();
 		if (currentData != null && !currentData.getClass().isArray()) {
 			throw new IllegalStateException("Field is not an array");
 		}
-		ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
+		final ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
 		if (currentData == null || Array.getLength(currentData) != serializer.getData().length) {
 			currentData = Array.newInstance(this.contentType, serializer.getData().length);
 			ref.getValueHolder().set(currentData);
 		}
 		for (int i = 0; i < Array.getLength(currentData); ++i) {
-			ArrayReference itemRef = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
+			final ArrayReference itemRef = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
 			this.contentHandler.writeToReference(operation, itemRef, serializer.getData()[i]);
 		}
 	}

@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.Pair;
-import nl.appelgebakje22.xdata.adapter.BaseAdapter;
 import nl.appelgebakje22.xdata.api.Checker;
 import nl.appelgebakje22.xdata.handlers.BooleanHandler;
 import nl.appelgebakje22.xdata.handlers.ByteHandler;
@@ -33,7 +32,7 @@ import static nl.appelgebakje22.xdata.XDataRegister.register;
 
 public final class XData {
 
-	public static void init(Runnable registerCallback) {
+	public static void init(final Runnable registerCallback) {
 		register(BooleanSerializer.class, BooleanSerializer::new, new BooleanHandler());
 		register(ByteSerializer.class, ByteSerializer::new, new ByteHandler());
 		register(ShortSerializer.class, ShortSerializer::new, new ShortHandler());
@@ -47,10 +46,10 @@ public final class XData {
 
 		register(StringSerializer.class, StringSerializer::new, String.class, true);
 		register(UUIDSerializer.class, UUIDSerializer::new, UUID.class, true);
-//		register(AdapterSerializer.class, AdapterSerializer::new, BaseAdapter.class, false);
+		//		register(AdapterSerializer.class, AdapterSerializer::new, BaseAdapter.class, false);
 
 		register(StringSerializer.class, StringSerializer::new, new EnumHandler());
-//		register(AdapterSerializer.class, AdapterSerializer::new, new IManagedHandler());
+		//		register(AdapterSerializer.class, AdapterSerializer::new, new IManagedHandler());
 
 		registerCallback.run();
 
@@ -62,7 +61,7 @@ public final class XData {
 		});
 	}
 
-	public static <T> T make(T obj, Consumer<T> mod) {
+	public static <T> T make(final T obj, final Consumer<T> mod) {
 		mod.accept(obj);
 		return obj;
 	}
@@ -72,10 +71,12 @@ public final class XData {
 
 			private final Map<Pair<A, B>, Z> cache = new ConcurrentHashMap<>();
 
-			public Z apply(A a, B b) {
+			@Override
+			public Z apply(final A a, final B b) {
 				return this.cache.computeIfAbsent(Pair.of(a, b), key -> memoBiFunction.apply(key.first(), key.second()));
 			}
 
+			@Override
 			public String toString() {
 				return "memoize/2[function=" + memoBiFunction + ", size=" + this.cache.size() + "]";
 			}
@@ -83,7 +84,7 @@ public final class XData {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static boolean isEqual(Object value1, Object value2) {
+	public static boolean isEqual(final Object value1, final Object value2) {
 		if ((value1 == null) != (value2 == null)) {
 			return false;
 		}
@@ -93,8 +94,8 @@ public final class XData {
 		if (!value1.getClass().isAssignableFrom(value2.getClass()) && !value2.getClass().isAssignableFrom(value1.getClass())) {
 			return false;
 		}
-		Checker checker1 = XDataRegister.getChecker(value1.getClass());
-		Checker checker2 = XDataRegister.getChecker(value2.getClass());
+		final Checker checker1 = XDataRegister.getChecker(value1.getClass());
+		final Checker checker2 = XDataRegister.getChecker(value2.getClass());
 		if (checker1 != checker2) {
 			return false;
 		}

@@ -56,49 +56,49 @@ public interface ArrayAdapter extends BaseAdapter {
 
 	boolean getBoolean(int index, boolean fallback);
 
-	default boolean getBoolean(int index) {
+	default boolean getBoolean(final int index) {
 		return this.getBoolean(index, false);
 	}
 
 	byte getByte(int index, byte fallback);
 
-	default byte getByte(int index) {
+	default byte getByte(final int index) {
 		return this.getByte(index, (byte) 0);
 	}
 
 	short getShort(int index, short fallback);
 
-	default short getShort(int index) {
+	default short getShort(final int index) {
 		return this.getShort(index, (short) 0);
 	}
 
 	int getInt(int index, int fallback);
 
-	default int getInt(int index) {
-		return this.getInt(index, (int) 0);
+	default int getInt(final int index) {
+		return this.getInt(index, 0);
 	}
 
 	long getLong(int index, long fallback);
 
-	default long getLong(int index) {
-		return this.getLong(index, (long) 0);
+	default long getLong(final int index) {
+		return this.getLong(index, 0);
 	}
 
 	float getFloat(int index, float fallback);
 
-	default float getFloat(int index) {
+	default float getFloat(final int index) {
 		return this.getFloat(index, (float) 0);
 	}
 
 	double getDouble(int index, double fallback);
 
-	default double getDouble(int index) {
-		return this.getDouble(index, (double) 0);
+	default double getDouble(final int index) {
+		return this.getDouble(index, 0);
 	}
 
 	char getChar(int index, char fallback);
 
-	default char getChar(int index) {
+	default char getChar(final int index) {
 		return this.getChar(index, (char) 0);
 	}
 
@@ -106,7 +106,7 @@ public interface ArrayAdapter extends BaseAdapter {
 	String getString(int index, String fallback);
 
 	@UnknownNullability
-	default String getString(int index) {
+	default String getString(final int index) {
 		return this.getString(index, null);
 	}
 

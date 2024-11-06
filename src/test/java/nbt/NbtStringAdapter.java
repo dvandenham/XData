@@ -6,19 +6,19 @@ import nl.appelgebakje22.xdata.adapter.CharAdapter;
 class NbtStringAdapter extends BaseStringAdapter implements CharAdapter {
 
 	@Override
-	public void setChar(char value) {
-		setString(String.valueOf(value));
+	public void setChar(final char value) {
+		this.setString(String.valueOf(value));
 	}
 
 	@Override
 	public char getChar() {
-		String s = getString();
+		final String s = this.getString();
 		return !s.isEmpty() ? s.charAt(0) : 0;
 	}
 
 	@Override
-	public char getChar(char fallback) {
-		char result = getChar();
+	public char getChar(final char fallback) {
+		final char result = this.getChar();
 		return result != 0 ? result : fallback;
 	}
 }

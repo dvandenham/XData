@@ -25,7 +25,7 @@ public class Reference {
 	@Nullable
 	private BooleanConsumer syncStateCallback = null;
 
-	Reference(ReferenceKey key, Holder valueHolder) {
+	Reference(final ReferenceKey key, final Holder valueHolder) {
 		this.key = key;
 		this.valueHolder = valueHolder;
 	}
@@ -34,8 +34,8 @@ public class Reference {
 	}
 
 	public void markDirty() {
-		markPersistenceDirty();
-		markSyncDirty();
+		this.markPersistenceDirty();
+		this.markSyncDirty();
 	}
 
 	public void markPersistenceDirty() {
@@ -74,8 +74,8 @@ public class Reference {
 		}
 	}
 
-	public static Reference of(ReferenceKey referenceKey, Holder valueHolder) {
-		if (valueHolder instanceof ReflectionHolder reflectionHolder && reflectionHolder.isPrimitive()) {
+	public static Reference of(final ReferenceKey referenceKey, final Holder valueHolder) {
+		if (valueHolder instanceof final ReflectionHolder reflectionHolder && reflectionHolder.isPrimitive()) {
 			return new PrimitiveReference(referenceKey, valueHolder);
 		} else if (referenceKey.getRawField().getType().isArray() || Collection.class.isAssignableFrom(referenceKey.getRawField().getType())) {
 			return new GenericArrayOuterReference(referenceKey, valueHolder);
@@ -89,14 +89,14 @@ public class Reference {
 
 		private Object lastValue;
 
-		public PrimitiveReference(ReferenceKey key, Holder valueHolder) {
+		public PrimitiveReference(final ReferenceKey key, final Holder valueHolder) {
 			super(key, valueHolder);
 			this.lastValue = valueHolder.get();
 		}
 
 		@Override
 		public void tick() {
-			Object newValue = getValueHolder().get();
+			final Object newValue = this.getValueHolder().get();
 			if (newValue != this.lastValue) {
 				this.lastValue = newValue;
 				this.markDirty();

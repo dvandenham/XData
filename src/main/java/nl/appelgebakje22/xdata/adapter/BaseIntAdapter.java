@@ -4,7 +4,7 @@ public class BaseIntAdapter extends BaseNumberAdapter<Integer> implements IntAda
 
 	private int value;
 
-	public void setNumber(int number) {
+	public void setNumber(final int number) {
 		this.value = number;
 	}
 

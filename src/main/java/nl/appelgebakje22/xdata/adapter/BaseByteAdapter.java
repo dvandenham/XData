@@ -4,7 +4,7 @@ public class BaseByteAdapter extends BaseNumberAdapter<Byte> implements ByteAdap
 
 	private byte value;
 
-	public void setNumber(byte number) {
+	public void setNumber(final byte number) {
 		this.value = number;
 	}
 

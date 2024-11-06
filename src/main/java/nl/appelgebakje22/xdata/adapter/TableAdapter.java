@@ -32,49 +32,49 @@ public interface TableAdapter extends BaseAdapter {
 
 	boolean getBoolean(String key, boolean fallback);
 
-	default boolean getBoolean(String key) {
+	default boolean getBoolean(final String key) {
 		return this.getBoolean(key, false);
 	}
 
 	byte getByte(String key, byte fallback);
 
-	default byte getByte(String key) {
+	default byte getByte(final String key) {
 		return this.getByte(key, (byte) 0);
 	}
 
 	short getShort(String key, short fallback);
 
-	default short getShort(String key) {
+	default short getShort(final String key) {
 		return this.getShort(key, (short) 0);
 	}
 
 	int getInt(String key, int fallback);
 
-	default int getInt(String key) {
-		return this.getInt(key, (int) 0);
+	default int getInt(final String key) {
+		return this.getInt(key, 0);
 	}
 
 	long getLong(String key, long fallback);
 
-	default long getLong(String key) {
-		return this.getLong(key, (long) 0);
+	default long getLong(final String key) {
+		return this.getLong(key, 0);
 	}
 
 	float getFloat(String key, float fallback);
 
-	default float getFloat(String key) {
+	default float getFloat(final String key) {
 		return this.getFloat(key, (float) 0);
 	}
 
 	double getDouble(String key, double fallback);
 
-	default double getDouble(String key) {
-		return this.getDouble(key, (double) 0);
+	default double getDouble(final String key) {
+		return this.getDouble(key, 0);
 	}
 
 	char getChar(String key, char fallback);
 
-	default char getChar(String key) {
+	default char getChar(final String key) {
 		return this.getChar(key, (char) 0);
 	}
 
@@ -82,7 +82,7 @@ public interface TableAdapter extends BaseAdapter {
 	String getString(String key, String fallback);
 
 	@UnknownNullability
-	default String getString(String key) {
+	default String getString(final String key) {
 		return this.getString(key, null);
 	}
 

@@ -16,7 +16,7 @@ public class SimpleHolder implements Holder {
 	}
 
 	@Override
-	public void set(@Nullable Object object) {
+	public void set(@Nullable final Object object) {
 		this.data = object;
 	}
 }

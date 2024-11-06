@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class ShortSerializer extends Serializer<Short> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofShort(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofShort(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
-		setData(numberAdapter.getShort());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final NumberAdapter<?> numberAdapter = this.testAdapter(adapter, NumberAdapter.class);
+		this.setData(numberAdapter.getShort());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readShort());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readShort());
 	}
 
-	public static ShortSerializer of(short data) {
+	public static ShortSerializer of(final short data) {
 		return XData.make(new ShortSerializer(), serializer -> serializer.setData(data));
 	}
 }

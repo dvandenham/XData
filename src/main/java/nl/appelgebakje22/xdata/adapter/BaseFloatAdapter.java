@@ -4,7 +4,7 @@ public class BaseFloatAdapter extends BaseNumberAdapter<Float> implements FloatA
 
 	private float value;
 
-	public void setNumber(float number) {
+	public void setNumber(final float number) {
 		this.value = number;
 	}
 

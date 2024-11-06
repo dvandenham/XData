@@ -9,18 +9,18 @@ import nl.appelgebakje22.xdata.serializers.ShortSerializer;
 public class ShortHandler implements ReferenceHandler {
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return clazz == short.class || clazz == Short.class;
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		return ShortSerializer.of((short) ref.getValueHolder().get());
 	}
 
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> serializer) {
-		ShortSerializer s = this.testSerializer(serializer, ShortSerializer.class);
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
+		final ShortSerializer s = this.testSerializer(serializer, ShortSerializer.class);
 		ref.getValueHolder().set(s.getData());
 	}
 }

@@ -6,7 +6,7 @@ import nl.appelgebakje22.xdata.adapter.BooleanAdapter;
 class NbtByteAdapter extends BaseByteAdapter implements BooleanAdapter {
 
 	@Override
-	public void setBoolean(boolean value) {
+	public void setBoolean(final boolean value) {
 		this.setNumber((byte) (value ? 1 : 0));
 	}
 
@@ -16,7 +16,7 @@ class NbtByteAdapter extends BaseByteAdapter implements BooleanAdapter {
 	}
 
 	@Override
-	public boolean getBoolean(boolean fallback) {
+	public boolean getBoolean(final boolean fallback) {
 		return this.getBoolean() || fallback;
 	}
 }

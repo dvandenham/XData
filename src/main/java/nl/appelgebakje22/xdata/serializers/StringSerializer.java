@@ -12,27 +12,27 @@ import org.jetbrains.annotations.Nullable;
 public class StringSerializer extends Serializer<String> {
 
 	@Override
-	public @Nullable BaseAdapter serialize(Reference ref, AdapterFactory adapters) {
-		return adapters.ofString(getData());
+	public @Nullable BaseAdapter serialize(final Reference ref, final AdapterFactory adapters) {
+		return adapters.ofString(this.getData());
 	}
 
 	@Override
-	public void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter) {
-		StringAdapter stringAdapter = this.testAdapter(adapter, StringAdapter.class);
-		setData(stringAdapter.getString());
+	public void deserialize(final Reference ref, final AdapterFactory adapters, final BaseAdapter adapter) {
+		final StringAdapter stringAdapter = this.testAdapter(adapter, StringAdapter.class);
+		this.setData(stringAdapter.getString());
 	}
 
 	@Override
-	public void toNetwork(Reference ref, NetworkAdapter network) {
-		network.write(getData());
+	public void toNetwork(final Reference ref, final NetworkAdapter network) {
+		network.write(this.getData());
 	}
 
 	@Override
-	public void fromNetwork(Reference ref, NetworkAdapter network) {
-		setData(network.readString());
+	public void fromNetwork(final Reference ref, final NetworkAdapter network) {
+		this.setData(network.readString());
 	}
 
-	public static StringSerializer of(String data) {
+	public static StringSerializer of(final String data) {
 		return XData.make(new StringSerializer(), serializer -> serializer.setData(data));
 	}
 }

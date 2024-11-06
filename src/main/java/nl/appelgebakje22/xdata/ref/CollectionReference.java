@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public class CollectionReference extends Reference {
 
-	private CollectionReference(ReferenceKey key, Collection<?> collection, int index) {
+	private CollectionReference(final ReferenceKey key, final Collection<?> collection, final int index) {
 		super(key, new CollectionHolder(collection, index));
 	}
 
@@ -13,7 +13,7 @@ public class CollectionReference extends Reference {
 		//TODO check array contents
 	}
 
-	public static CollectionReference of(ReferenceKey key, Collection<?> collection, int index) {
+	public static CollectionReference of(final ReferenceKey key, final Collection<?> collection, final int index) {
 		return new CollectionReference(key, collection, index);
 	}
 }

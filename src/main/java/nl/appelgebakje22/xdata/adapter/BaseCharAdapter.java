@@ -5,7 +5,7 @@ public class BaseCharAdapter implements CharAdapter {
 	private char value;
 
 	@Override
-	public void setChar(char value) {
+	public void setChar(final char value) {
 		this.value = value;
 	}
 
@@ -15,7 +15,7 @@ public class BaseCharAdapter implements CharAdapter {
 	}
 
 	@Override
-	public char getChar(char fallback) {
+	public char getChar(final char fallback) {
 		return this.value != 0 ? this.value : fallback;
 	}
 }

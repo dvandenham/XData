@@ -6,20 +6,20 @@ import nl.appelgebakje22.xdata.api.IManaged;
 
 public class IManagedOuterReference extends Reference {
 
-	IManagedOuterReference(ReferenceKey key, Holder valueHolder) {
+	IManagedOuterReference(final ReferenceKey key, final Holder valueHolder) {
 		super(key, valueHolder);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		ManagedDataMap map = ((IManaged) getValueHolder().get()).getDataMap();
+		final ManagedDataMap map = ((IManaged) this.getValueHolder().get()).getDataMap();
 		map.tick();
 		if (map.hasDirtyPersistentFields()) {
-			markPersistenceDirty();
+			this.markPersistenceDirty();
 		}
 		if (map.hasDirtySyncFields()) {
-			markSyncDirty();
+			this.markSyncDirty();
 		}
 	}
 }

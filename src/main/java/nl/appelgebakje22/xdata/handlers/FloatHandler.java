@@ -9,18 +9,18 @@ import nl.appelgebakje22.xdata.serializers.FloatSerializer;
 public class FloatHandler implements ReferenceHandler {
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return clazz == float.class || clazz == Float.class;
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		return FloatSerializer.of((float) ref.getValueHolder().get());
 	}
 
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> serializer) {
-		FloatSerializer s = this.testSerializer(serializer, FloatSerializer.class);
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
+		final FloatSerializer s = this.testSerializer(serializer, FloatSerializer.class);
 		ref.getValueHolder().set(s.getData());
 	}
 }

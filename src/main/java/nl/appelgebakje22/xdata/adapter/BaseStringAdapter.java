@@ -5,7 +5,7 @@ public class BaseStringAdapter implements StringAdapter {
 	private String value;
 
 	@Override
-	public void setString(String value) {
+	public void setString(final String value) {
 		this.value = value;
 	}
 
@@ -15,7 +15,7 @@ public class BaseStringAdapter implements StringAdapter {
 	}
 
 	@Override
-	public String getString(String fallback) {
+	public String getString(final String fallback) {
 		return this.value != null ? this.value : fallback;
 	}
 }

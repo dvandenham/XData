@@ -9,14 +9,14 @@ import nl.appelgebakje22.xdata.adapter.TableAdapter;
 
 class NbtTableAdapter extends BaseTableAdapter {
 
-	public NbtTableAdapter(NbtAdapterFactory adapters) {
+	public NbtTableAdapter(final NbtAdapterFactory adapters) {
 		super(adapters);
 	}
 
-	public static Tag toTag(TableAdapter adapter) {
+	public static Tag toTag(final TableAdapter adapter) {
 		return XData.make(new CompoundTag(), nbt -> {
-			for (String key : adapter.getKeys()) {
-				Tag serializedTag = NbtAdapterFactory.toTag(adapter.get(key));
+			for (final String key : adapter.getKeys()) {
+				final Tag serializedTag = NbtAdapterFactory.toTag(adapter.get(key));
 				if (serializedTag != null) {
 					nbt.put(key, serializedTag);
 				}
@@ -24,8 +24,8 @@ class NbtTableAdapter extends BaseTableAdapter {
 		});
 	}
 
-	public static TableAdapter fromTag(AdapterFactory adapters, CompoundTag compoundTag) {
-		TableAdapter result = adapters.table();
+	public static TableAdapter fromTag(final AdapterFactory adapters, final CompoundTag compoundTag) {
+		final TableAdapter result = adapters.table();
 		compoundTag.keySet().forEach(key -> {
 			result.set(key, NbtAdapterFactory.fromTag(adapters, compoundTag.get(key)));
 		});

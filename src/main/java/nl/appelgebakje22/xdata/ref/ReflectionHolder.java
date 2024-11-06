@@ -12,7 +12,7 @@ public abstract class ReflectionHolder implements Holder {
 	@Getter
 	private final boolean primitive;
 
-	private ReflectionHolder(Object instance, boolean primitive) {
+	private ReflectionHolder(final Object instance, final boolean primitive) {
 		this.instance = instance;
 		this.primitive = primitive;
 	}
@@ -24,27 +24,27 @@ public abstract class ReflectionHolder implements Holder {
 	@SneakyThrows
 	@Override
 	public @Nullable Object get() {
-		return get(this.instance);
+		return this.get(this.instance);
 	}
 
 	@SneakyThrows
 	@Override
-	public void set(@Nullable Object object) {
+	public void set(@Nullable final Object object) {
 		this.set(this.instance, object);
 	}
 
-	public static ReflectionHolder of(Field rawField, Object instance) {
-		Class<?> c = rawField.getType();
+	public static ReflectionHolder of(final Field rawField, final Object instance) {
+		final Class<?> c = rawField.getType();
 		if (c == boolean.class) {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getBoolean(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setBoolean(instance, (boolean) data);
 				}
 			};
@@ -52,12 +52,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getByte(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setByte(instance, (byte) data);
 				}
 			};
@@ -65,12 +65,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getShort(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setShort(instance, (short) data);
 				}
 			};
@@ -78,12 +78,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getInt(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setInt(instance, (int) data);
 				}
 			};
@@ -91,12 +91,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getLong(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setLong(instance, (long) data);
 				}
 			};
@@ -104,12 +104,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getFloat(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setFloat(instance, (float) data);
 				}
 			};
@@ -117,12 +117,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getDouble(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setDouble(instance, (double) data);
 				}
 			};
@@ -130,12 +130,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, true) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.getChar(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.setChar(instance, (char) data);
 				}
 			};
@@ -143,12 +143,12 @@ public abstract class ReflectionHolder implements Holder {
 			return new ReflectionHolder(instance, false) {
 
 				@Override
-				public Object get(Object instance) throws IllegalAccessException {
+				public Object get(final Object instance) throws IllegalAccessException {
 					return rawField.get(instance);
 				}
 
 				@Override
-				public void set(Object instance, Object data) throws IllegalAccessException {
+				public void set(final Object instance, final Object data) throws IllegalAccessException {
 					rawField.set(instance, data);
 				}
 			};

@@ -24,12 +24,12 @@ public class CollectionHandler implements ReferenceHandler {
 	private final Class<?> contentType;
 
 	@Override
-	public boolean canHandle(Class<?> clazz) {
+	public boolean canHandle(final Class<?> clazz) {
 		return Collections.class.isAssignableFrom(clazz);
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
 		final Object currentData = ref.getValueHolder().get();
 		if (!(currentData instanceof final Collection<?> collection)) {
 			throw new IllegalStateException("Field is not a collection");
@@ -44,15 +44,15 @@ public class CollectionHandler implements ReferenceHandler {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer) {
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> rawSerializer) {
 		final Object currentData = ref.getValueHolder().get();
 		if (!(currentData instanceof final Collection collection)) {
 			throw new IllegalStateException("Field is not a collection");
 		}
-		ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
+		final ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
 		collection.clear();
-		for (Serializer<?> item : serializer.getData()) {
-			Holder itemHolder = new SimpleHolder();
+		for (final Serializer<?> item : serializer.getData()) {
+			final Holder itemHolder = new SimpleHolder();
 			this.contentHandler.writeToReference(operation, Reference.of(ref.getKey(), itemHolder), item);
 			collection.add(itemHolder.get());
 		}

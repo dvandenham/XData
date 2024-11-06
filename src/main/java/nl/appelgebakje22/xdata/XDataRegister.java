@@ -45,98 +45,98 @@ public final class XDataRegister {
 	private static final List<Checker<?>> CHECKERS = new ArrayList<>();
 	private static final Object2ObjectMap<Class<?>, Checker<?>> CHECKER_TYPE_CACHE = new Object2ObjectArrayMap<>();
 
-	public static <T extends Serializer<?>> int register(Class<T> serializerType, Supplier<T> factory) {
-		if (INITIALIZED.get()) {
+	public static <T extends Serializer<?>> int register(final Class<T> serializerType, final Supplier<T> factory) {
+		if (XDataRegister.INITIALIZED.get()) {
 			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(Serializer.class.getName(), serializerType.getName()));
 		}
-		int id = SERIALIZER_REGISTRY.getOrDefault(serializerType, -1);
+		int id = XDataRegister.SERIALIZER_REGISTRY.getOrDefault(serializerType, -1);
 		if (id == -1) {
-			id = SERIALIZER_ID_HOLDER.getAndIncrement();
-			SERIALIZER_REGISTRY.put(serializerType, id);
-			SERIALIZER_FACTORIES.put(id, factory);
+			id = XDataRegister.SERIALIZER_ID_HOLDER.getAndIncrement();
+			XDataRegister.SERIALIZER_REGISTRY.put(serializerType, id);
+			XDataRegister.SERIALIZER_FACTORIES.put(id, factory);
 		}
 		return id;
 	}
 
-	public static <T extends Serializer<?>> void register(Class<T> serializerType, Supplier<T> factory, ReferenceHandler handler, int priority) {
-		if (INITIALIZED.get()) {
+	public static <T extends Serializer<?>> void register(final Class<T> serializerType, final Supplier<T> factory, final ReferenceHandler handler, final int priority) {
+		if (XDataRegister.INITIALIZED.get()) {
 			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(ReferenceHandler.class.getName(), handler.getClass().getName()));
 		}
-		int serializerId = register(serializerType, factory);
-		HANDLERS_UNSORTED.put(handler, priority);
-		HANDLER_TO_SERIALIZER_MAPPING.put(handler, serializerId);
+		final int serializerId = XDataRegister.register(serializerType, factory);
+		XDataRegister.HANDLERS_UNSORTED.put(handler, priority);
+		XDataRegister.HANDLER_TO_SERIALIZER_MAPPING.put(handler, serializerId);
 	}
 
-	public static <T extends Serializer<?>> void register(Class<T> serializerType, Supplier<T> factory, ReferenceHandler handler) {
-		register(serializerType, factory, handler, DEFAULT_PRIORITY);
+	public static <T extends Serializer<?>> void register(final Class<T> serializerType, final Supplier<T> factory, final ReferenceHandler handler) {
+		XDataRegister.register(serializerType, factory, handler, XDataRegister.DEFAULT_PRIORITY);
 	}
 
-	public static <T, S extends Serializer<T>> void register(Class<S> serializerType, Supplier<S> factory, Class<T> valueType, boolean shallowEqualityCheck, int priority) {
-		register(serializerType, factory, new SimpleObjectHandler(valueType, shallowEqualityCheck, factory), priority);
+	public static <T, S extends Serializer<T>> void register(final Class<S> serializerType, final Supplier<S> factory, final Class<T> valueType, final boolean shallowEqualityCheck, final int priority) {
+		XDataRegister.register(serializerType, factory, new SimpleObjectHandler(valueType, shallowEqualityCheck, factory), priority);
 	}
 
-	public static <T, S extends Serializer<T>> void register(Class<S> serializerType, Supplier<S> factory, Class<T> valueType, boolean shallowEqualityCheck) {
-		register(serializerType, factory, valueType, shallowEqualityCheck, DEFAULT_PRIORITY);
+	public static <T, S extends Serializer<T>> void register(final Class<S> serializerType, final Supplier<S> factory, final Class<T> valueType, final boolean shallowEqualityCheck) {
+		XDataRegister.register(serializerType, factory, valueType, shallowEqualityCheck, XDataRegister.DEFAULT_PRIORITY);
 	}
 
-	public static void register(Copier<?> copier) {
-		if (INITIALIZED.get()) {
+	public static void register(final Copier<?> copier) {
+		if (XDataRegister.INITIALIZED.get()) {
 			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(Copier.class.getName(), copier.getClass().getName()));
 		}
-		COPIERS.add(copier);
+		XDataRegister.COPIERS.add(copier);
 	}
 
-	public static void register(Checker<?> checker) {
-		if (INITIALIZED.get()) {
+	public static void register(final Checker<?> checker) {
+		if (XDataRegister.INITIALIZED.get()) {
 			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(Checker.class.getName(), checker.getClass().getName()));
 		}
-		CHECKERS.add(checker);
+		XDataRegister.CHECKERS.add(checker);
 	}
 
 	static void freeze() {
-		HANDLERS_SORTED.addAll(HANDLERS_UNSORTED.object2IntEntrySet().stream().sorted((o1, o2) -> Integer.compare(o2.getIntValue(), o1.getIntValue())).map(Map.Entry::getKey).toList());
+		XDataRegister.HANDLERS_SORTED.addAll(XDataRegister.HANDLERS_UNSORTED.object2IntEntrySet().stream().sorted((o1, o2) -> Integer.compare(o2.getIntValue(), o1.getIntValue())).map(Map.Entry::getKey).toList());
 		XDataRegister.INITIALIZED.set(true);
 	}
 
-	public static boolean canHandleType(Type type) {
-		return getHandler(type) != null;
+	public static boolean canHandleType(final Type type) {
+		return XDataRegister.getHandler(type) != null;
 	}
 
-	public static int getSerializerId(Serializer<?> serializer) {
-		return SERIALIZER_REGISTRY.getInt(serializer.getClass());
+	public static int getSerializerId(final Serializer<?> serializer) {
+		return XDataRegister.SERIALIZER_REGISTRY.getInt(serializer.getClass());
 	}
 
-	public static Serializer<?> getSerializerById(int id) {
-		return SERIALIZER_FACTORIES.get(id).get();
+	public static Serializer<?> getSerializerById(final int id) {
+		return XDataRegister.SERIALIZER_FACTORIES.get(id).get();
 	}
 
-	public static Serializer<?> getSerializerByHandler(ReferenceHandler handler) {
+	public static Serializer<?> getSerializerByHandler(final ReferenceHandler handler) {
 		if (handler instanceof ArrayHandler || handler instanceof CollectionHandler) {
 			return new ArraySerializer();
 		}
-		int id = HANDLER_TO_SERIALIZER_MAPPING.getInt(handler);
+		final int id = XDataRegister.HANDLER_TO_SERIALIZER_MAPPING.getInt(handler);
 		return XDataRegister.getSerializerById(id);
 	}
 
 	@Nullable
-	public static ReferenceHandler getHandler(Type clazz) {
-		if (clazz instanceof GenericArrayType array) {
-			Type contentType = array.getGenericComponentType();
-			ReferenceHandler contentHandler = getHandler(contentType);
-			Class<?> rawType = getRawType(contentType);
+	public static ReferenceHandler getHandler(final Type clazz) {
+		if (clazz instanceof final GenericArrayType array) {
+			final Type contentType = array.getGenericComponentType();
+			final ReferenceHandler contentHandler = XDataRegister.getHandler(contentType);
+			final Class<?> rawType = XDataRegister.getRawType(contentType);
 			return ArrayHandler.FACTORY.apply(contentHandler, rawType == null ? Object.class : rawType);
 		}
-		Class<?> rawType = getRawType(clazz);
+		final Class<?> rawType = XDataRegister.getRawType(clazz);
 		if (rawType != null) {
 			if (rawType.isArray()) {
-				Class<?> contentType = rawType.getComponentType();
-				ReferenceHandler contentHandler = getHandler(contentType);
+				final Class<?> contentType = rawType.getComponentType();
+				final ReferenceHandler contentHandler = XDataRegister.getHandler(contentType);
 				return ArrayHandler.FACTORY.apply(contentHandler, contentType);
 			}
 			if (Collection.class.isAssignableFrom(rawType)) {
-				Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
-				ReferenceHandler contentHandler = getHandler(contentType);
-				Class<?> rawContentType = getRawType(contentType);
+				final Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
+				final ReferenceHandler contentHandler = XDataRegister.getHandler(contentType);
+				final Class<?> rawContentType = XDataRegister.getRawType(contentType);
 				return CollectionHandler.FACTORY.apply(contentHandler, rawContentType == null ? Object.class : rawContentType);
 			}
 			return XDataRegister.getHandlerByClass(rawType);
@@ -145,31 +145,31 @@ public final class XDataRegister {
 	}
 
 	@Nullable
-	private static ReferenceHandler getHandlerByClass(Class<?> clazz) {
-		if (!INITIALIZED.get()) {
+	private static ReferenceHandler getHandlerByClass(final Class<?> clazz) {
+		if (!XDataRegister.INITIALIZED.get()) {
 			throw new IllegalStateException("Cannot fetch %s during initialization!".formatted(ReferenceHandler.class.getName()));
 		}
-		return HANDLER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> HANDLERS_SORTED.stream().filter(entry -> entry.canHandle(clazz)).findFirst().orElse(null));
+		return XDataRegister.HANDLER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> XDataRegister.HANDLERS_SORTED.stream().filter(entry -> entry.canHandle(clazz)).findFirst().orElse(null));
 	}
 
-	public static Class<?> getRawType(Type type) {
+	public static Class<?> getRawType(final Type type) {
 		return switch (type) {
-			case Class<?> aClass -> aClass;
-			case GenericArrayType genericArrayType -> getRawType(genericArrayType.getGenericComponentType());
-			case ParameterizedType parameterizedType -> getRawType(parameterizedType.getRawType());
+			case final Class<?> aClass -> aClass;
+			case final GenericArrayType genericArrayType -> XDataRegister.getRawType(genericArrayType.getGenericComponentType());
+			case final ParameterizedType parameterizedType -> XDataRegister.getRawType(parameterizedType.getRawType());
 			case null, default -> null;
 		};
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public static <T> Copier<T> getCopier(Class<T> clazz) {
-		return (Copier<T>) COPIER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> COPIERS.stream().filter(copier -> copier.canHandle(clazz)).findFirst().orElse(null));
+	public static <T> Copier<T> getCopier(final Class<T> clazz) {
+		return (Copier<T>) XDataRegister.COPIER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> XDataRegister.COPIERS.stream().filter(copier -> copier.canHandle(clazz)).findFirst().orElse(null));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public static <T> Checker<T> getChecker(Class<T> clazz) {
-		return (Checker<T>) CHECKER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> CHECKERS.stream().filter(checker -> checker.canHandle(clazz)).findFirst().orElse(null));
+	public static <T> Checker<T> getChecker(final Class<T> clazz) {
+		return (Checker<T>) XDataRegister.CHECKER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> XDataRegister.CHECKERS.stream().filter(checker -> checker.canHandle(clazz)).findFirst().orElse(null));
 	}
 }
