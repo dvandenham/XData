@@ -1,14 +1,17 @@
 package nl.appelgebakje22.xdata;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.Pair;
+import net.querz.nbt.tag.Tag;
 import nl.appelgebakje22.xdata.handlers.BooleanHandler;
 import nl.appelgebakje22.xdata.handlers.ByteHandler;
 import nl.appelgebakje22.xdata.handlers.CharHandler;
 import nl.appelgebakje22.xdata.handlers.DoubleHandler;
+import nl.appelgebakje22.xdata.handlers.EnumHandler;
 import nl.appelgebakje22.xdata.handlers.FloatHandler;
 import nl.appelgebakje22.xdata.handlers.IManagedHandler;
 import nl.appelgebakje22.xdata.handlers.IntHandler;
@@ -24,24 +27,32 @@ import nl.appelgebakje22.xdata.serializers.IntSerializer;
 import nl.appelgebakje22.xdata.serializers.LongSerializer;
 import nl.appelgebakje22.xdata.serializers.NbtSerializer;
 import nl.appelgebakje22.xdata.serializers.ShortSerializer;
+import nl.appelgebakje22.xdata.serializers.StringSerializer;
+import nl.appelgebakje22.xdata.serializers.UUIDSerializer;
+import static nl.appelgebakje22.xdata.XDataRegister.register;
 
 public final class XData {
 
 	public static final String XDATA = "xdata";
 
 	public static void init() {
-		XDataRegister.register(BooleanSerializer.class, BooleanSerializer::new, new BooleanHandler());
-		XDataRegister.register(ByteSerializer.class, ByteSerializer::new, new ByteHandler());
-		XDataRegister.register(ShortSerializer.class, ShortSerializer::new, new ShortHandler());
-		XDataRegister.register(IntSerializer.class, IntSerializer::new, new IntHandler());
-		XDataRegister.register(LongSerializer.class, LongSerializer::new, new LongHandler());
-		XDataRegister.register(FloatSerializer.class, FloatSerializer::new, new FloatHandler());
-		XDataRegister.register(DoubleSerializer.class, DoubleSerializer::new, new DoubleHandler());
-		XDataRegister.register(CharSerializer.class, CharSerializer::new, new CharHandler());
+		register(BooleanSerializer.class, BooleanSerializer::new, new BooleanHandler());
+		register(ByteSerializer.class, ByteSerializer::new, new ByteHandler());
+		register(ShortSerializer.class, ShortSerializer::new, new ShortHandler());
+		register(IntSerializer.class, IntSerializer::new, new IntHandler());
+		register(LongSerializer.class, LongSerializer::new, new LongHandler());
+		register(FloatSerializer.class, FloatSerializer::new, new FloatHandler());
+		register(DoubleSerializer.class, DoubleSerializer::new, new DoubleHandler());
+		register(CharSerializer.class, CharSerializer::new, new CharHandler());
 
-		XDataRegister.register(ArraySerializer.class, ArraySerializer::new);
+		register(ArraySerializer.class, ArraySerializer::new);
 
-		XDataRegister.register(NbtSerializer.class, NbtSerializer::new, new IManagedHandler());
+		register(StringSerializer.class, StringSerializer::new, String.class, true);
+		register(UUIDSerializer.class, UUIDSerializer::new, UUID.class, true);
+		register(NbtSerializer.class, NbtSerializer::new, Tag.class, false);
+
+		register(StringSerializer.class, StringSerializer::new, new EnumHandler());
+		register(NbtSerializer.class, NbtSerializer::new, new IManagedHandler());
 
 		XDataRegister.freeze();
 	}
