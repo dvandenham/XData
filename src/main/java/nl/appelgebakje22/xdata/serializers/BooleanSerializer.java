@@ -17,7 +17,7 @@ public class BooleanSerializer extends SimpleSerializer<Boolean> {
 	@Override
 	public void deserialize(AdapterFactory adapters, BaseAdapter adapter) {
 		BooleanAdapter booleanAdapter = this.testAdapter(adapter, BooleanAdapter.class);
-		setData(booleanAdapter.get());
+		setData(booleanAdapter.getBoolean());
 	}
 
 	public static BooleanSerializer of(boolean data) {

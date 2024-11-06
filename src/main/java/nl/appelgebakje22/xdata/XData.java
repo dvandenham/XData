@@ -35,7 +35,7 @@ import static nl.appelgebakje22.xdata.XDataRegister.register;
 
 public final class XData {
 
-	public static void init() {
+	public static void init(Runnable registerCallback) {
 		register(BooleanSerializer.class, BooleanSerializer::new, new BooleanHandler());
 		register(ByteSerializer.class, ByteSerializer::new, new ByteHandler());
 		register(ShortSerializer.class, ShortSerializer::new, new ShortHandler());
@@ -54,7 +54,14 @@ public final class XData {
 		register(StringSerializer.class, StringSerializer::new, new EnumHandler());
 		register(AdapterSerializer.class, AdapterSerializer::new, new IManagedHandler());
 
+		registerCallback.run();
+
 		XDataRegister.freeze();
+	}
+
+	public static void init() {
+		XData.init(() -> {
+		});
 	}
 
 	public static <T> T make(T obj, Consumer<T> mod) {

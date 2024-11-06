@@ -1,5 +1,5 @@
 package nl.appelgebakje22.xdata.adapter;
 
-public interface FloatAdapter extends BaseNumberAdapter<Float> {
+public interface FloatAdapter extends NumberAdapter<Float> {
 
 }

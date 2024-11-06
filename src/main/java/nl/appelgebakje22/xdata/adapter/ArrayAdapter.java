@@ -1,6 +1,5 @@
 package nl.appelgebakje22.xdata.adapter;
 
-import net.querz.nbt.tag.ArrayTag;
 import org.jetbrains.annotations.UnknownNullability;
 
 public interface ArrayAdapter extends BaseAdapter {

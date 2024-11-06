@@ -17,7 +17,7 @@ public class CharSerializer extends SimpleSerializer<Character> {
 	@Override
 	public void deserialize(AdapterFactory adapters, BaseAdapter adapter) {
 		CharAdapter charAdapter = this.testAdapter(adapter, CharAdapter.class);
-		setData(charAdapter.get());
+		setData(charAdapter.getChar());
 	}
 
 	public static CharSerializer of(char data) {

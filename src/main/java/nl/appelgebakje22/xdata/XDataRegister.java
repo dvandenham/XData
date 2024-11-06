@@ -95,8 +95,8 @@ public final class XDataRegister {
 	}
 
 	static void freeze() {
-		XDataRegister.INITIALIZED.set(true);
 		HANDLERS_SORTED.addAll(HANDLERS_UNSORTED.object2IntEntrySet().stream().sorted((o1, o2) -> Integer.compare(o2.getIntValue(), o1.getIntValue())).map(Map.Entry::getKey).toList());
+		XDataRegister.INITIALIZED.set(true);
 	}
 
 	public static boolean canHandleType(Type type) {

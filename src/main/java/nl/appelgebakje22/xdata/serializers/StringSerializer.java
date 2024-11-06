@@ -17,7 +17,7 @@ public class StringSerializer extends SimpleSerializer<String> {
 	@Override
 	public void deserialize(AdapterFactory adapters, BaseAdapter adapter) {
 		StringAdapter stringAdapter = this.testAdapter(adapter, StringAdapter.class);
-		setData(stringAdapter.get());
+		setData(stringAdapter.getString());
 	}
 
 	public static StringSerializer of(String data) {

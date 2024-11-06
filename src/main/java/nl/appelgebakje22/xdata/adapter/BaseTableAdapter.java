@@ -85,55 +85,55 @@ public class BaseTableAdapter implements TableAdapter {
 	@Override
 	public boolean getBoolean(String key, boolean fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof BooleanAdapter booleanAdapter ? booleanAdapter.get() : fallback;
+		return adapter instanceof BooleanAdapter booleanAdapter ? booleanAdapter.getBoolean() : fallback;
 	}
 
 	@Override
 	public byte getByte(String key, byte fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof ByteAdapter byteAdapter ? byteAdapter.get() : fallback;
+		return adapter instanceof NumberAdapter<?> numberAdapter ? numberAdapter.getByte() : fallback;
 	}
 
 	@Override
 	public short getShort(String key, short fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof ShortAdapter shortAdapter ? shortAdapter.get() : fallback;
+		return adapter instanceof NumberAdapter<?> numberAdapter ? numberAdapter.getShort() : fallback;
 	}
 
 	@Override
 	public int getInt(String key, int fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof IntAdapter intAdapter ? intAdapter.get() : fallback;
+		return adapter instanceof NumberAdapter<?> numberAdapter ? numberAdapter.getInt() : fallback;
 	}
 
 	@Override
 	public long getLong(String key, long fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof LongAdapter longAdapter ? longAdapter.get() : fallback;
+		return adapter instanceof NumberAdapter<?> numberAdapter ? numberAdapter.getLong() : fallback;
 	}
 
 	@Override
 	public float getFloat(String key, float fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof FloatAdapter floatAdapter ? floatAdapter.get() : fallback;
+		return adapter instanceof NumberAdapter<?> numberAdapter ? numberAdapter.getFloat() : fallback;
 	}
 
 	@Override
 	public double getDouble(String key, double fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof DoubleAdapter doubleAdapter ? doubleAdapter.get() : fallback;
+		return adapter instanceof NumberAdapter<?> numberAdapter ? numberAdapter.getDouble() : fallback;
 	}
 
 	@Override
 	public char getChar(String key, char fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof CharAdapter charAdapter ? charAdapter.get() : fallback;
+		return adapter instanceof CharAdapter charAdapter ? charAdapter.getChar() : fallback;
 	}
 
 	@Override
 	public @UnknownNullability String getString(String key, String fallback) {
 		BaseAdapter adapter = get(key);
-		return adapter instanceof StringAdapter stringAdapter ? stringAdapter.get() : fallback;
+		return adapter instanceof StringAdapter stringAdapter ? stringAdapter.getString() : fallback;
 	}
 
 	@Override

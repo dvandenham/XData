@@ -4,6 +4,10 @@ import org.jetbrains.annotations.Nullable;
 
 public interface AdapterFactory {
 
+	default NullTypeAdapter ofNull() {
+		return new NullTypeAdapter();
+	}
+
 	BooleanAdapter ofBoolean(boolean value);
 
 	default BooleanAdapter ofBoolean() {
