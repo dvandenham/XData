@@ -19,7 +19,7 @@ public class XDataSerializationUtils {
 			return null;
 		}
 		final Serializer<?> serializer = handler.readFromReference(operation, ref);
-		return serializer.serialize(adapters);
+		return serializer.serialize(ref, adapters);
 	}
 
 	public static void readRefFromAdapter(Operation operation, AdapterFactory adapters, Reference ref, BaseAdapter adapter) {
@@ -30,7 +30,7 @@ public class XDataSerializationUtils {
 			return;
 		}
 		final Serializer<?> serializer = XDataRegister.getSerializerByHandler(handler);
-		serializer.deserialize(adapters, adapter);
+		serializer.deserialize(ref, adapters, adapter);
 		handler.writeToReference(operation, ref, serializer);
 	}
 
@@ -42,6 +42,6 @@ public class XDataSerializationUtils {
 			return;
 		}
 		final Serializer<?> serializer = handler.readFromReference(operation, ref);
-		serializer.toNetwork(network);
+		serializer.toNetwork(ref, network);
 	}
 }

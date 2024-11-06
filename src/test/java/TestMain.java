@@ -21,8 +21,8 @@ public class TestMain implements IManaged {
 	@Persisted
 	private List<Boolean> test2 = new ArrayList<>(Arrays.asList(false, false, true));
 
-	@Persisted
-	private Managed2 managed2 = new Managed2();
+//	@Persisted
+//	private Managed2 managed2 = new Managed2();
 
 	public static void main(String[] args) throws IOException {
 		XData.init();

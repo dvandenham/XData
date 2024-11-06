@@ -6,6 +6,7 @@ import nl.appelgebakje22.xdata.XDataRegister;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.adapter.BaseAdapter;
 import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
+import nl.appelgebakje22.xdata.ref.Reference;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Serializer<T> {
@@ -15,13 +16,13 @@ public abstract class Serializer<T> {
 	private T data;
 
 	@Nullable
-	public abstract BaseAdapter serialize(AdapterFactory adapters);
+	public abstract BaseAdapter serialize(Reference ref, AdapterFactory adapters);
 
-	public abstract void deserialize(AdapterFactory adapters, BaseAdapter adapter);
+	public abstract void deserialize(Reference ref, AdapterFactory adapters, BaseAdapter adapter);
 
-	public abstract void toNetwork(NetworkAdapter network);
+	public abstract void toNetwork(Reference ref, NetworkAdapter network);
 
-	public abstract void fromNetwork(NetworkAdapter network);
+	public abstract void fromNetwork(Reference ref, NetworkAdapter network);
 
 	protected <A extends BaseAdapter> A testAdapter(BaseAdapter adapter, Class<A> expectedType) {
 		if (expectedType.isAssignableFrom(adapter.getClass())) {
