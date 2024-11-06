@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Getter;
 import lombok.Setter;
 import nl.appelgebakje22.xdata.api.Holder;
+import nl.appelgebakje22.xdata.api.IManaged;
 import org.jetbrains.annotations.Nullable;
 
 public class Reference {
@@ -33,12 +34,20 @@ public class Reference {
 	}
 
 	public void markDirty() {
+		markPersistenceDirty();
+		markSyncDirty();
+	}
+
+	public void markPersistenceDirty() {
 		if (this.key.isPersisted() && !this.needsPersist) {
 			this.needsPersist = true;
 			if (this.persistenceStateCallback != null) {
 				this.persistenceStateCallback.accept(true);
 			}
 		}
+	}
+
+	public void markSyncDirty() {
 		if (this.key.isSynchronized() && !this.needsSync) {
 			this.needsSync = true;
 			if (this.syncStateCallback != null) {
@@ -70,6 +79,8 @@ public class Reference {
 			return new PrimitiveReference(referenceKey, valueHolder);
 		} else if (referenceKey.getRawField().getType().isArray() || Collection.class.isAssignableFrom(referenceKey.getRawField().getType())) {
 			return new GenericArrayOuterReference(referenceKey, valueHolder);
+		} else if (IManaged.class.isAssignableFrom(referenceKey.getRawField().getType())) {
+			return new IManagedOuterReference(referenceKey, valueHolder);
 		}
 		return new Reference(referenceKey, valueHolder);
 	}

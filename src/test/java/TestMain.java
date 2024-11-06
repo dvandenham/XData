@@ -38,6 +38,9 @@ public class TestMain implements IManaged {
 		System.out.println(map.hasDirtyPersistentFields());
 		map.tick();
 		System.out.println(map.hasDirtyPersistentFields());
+		main.managed2.testinner = !main.managed2.testinner;
+		map.tick();
+		System.out.println(map.hasDirtyPersistentFields());
 		//		var nbt = XData.make(new CompoundTag(), t -> map.saveAllData(t, null));
 		//		System.out.println(nbt);
 		//		System.out.println(map.getReference(map.getPersistenceFields()[0]).getValueHolder().get());

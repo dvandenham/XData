@@ -7,7 +7,7 @@ public class Managed2 implements IManaged {
 	private final ManagedDataMap map = new ManagedDataMap(this);
 
 	@Persisted
-	private boolean testinner = true;
+	public boolean testinner = true;
 
 	@Override
 	public ManagedDataMap getDataMap() {
