@@ -1,15 +1,16 @@
 package nl.appelgebakje22.xdata.api;
 
-import nl.appelgebakje22.xdata.Reference;
+import nl.appelgebakje22.xdata.Operation;
 import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
+import nl.appelgebakje22.xdata.ref.Reference;
 
 public interface ReferenceHandler {
 
 	boolean canHandle(Class<?> clazz);
 
-	Serializer<?> readFromReference(Reference ref, HolderLookup_Provider registries);
+	Serializer<?> readFromReference(Operation operation, Reference ref, HolderLookup_Provider registries);
 
-	void writeToReference(Reference ref, Serializer<?> serializer, HolderLookup_Provider registries);
+	void writeToReference(Operation operation, Reference ref, Serializer<?> serializer, HolderLookup_Provider registries);
 
 	default <T extends Serializer<?>> T testSerializer(Serializer<?> serializer, Class<T> expectedType) {
 		if (expectedType.isAssignableFrom(serializer.getClass())) {

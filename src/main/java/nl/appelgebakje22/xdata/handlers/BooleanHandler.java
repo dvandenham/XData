@@ -1,6 +1,7 @@
 package nl.appelgebakje22.xdata.handlers;
 
-import nl.appelgebakje22.xdata.Reference;
+import nl.appelgebakje22.xdata.Operation;
+import nl.appelgebakje22.xdata.ref.Reference;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
@@ -14,12 +15,12 @@ public class BooleanHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Reference ref, HolderLookup_Provider registries) {
+	public Serializer<?> readFromReference(Operation operation, Reference ref, HolderLookup_Provider registries) {
 		return BooleanSerializer.of((boolean) ref.getValueHolder().get());
 	}
 
 	@Override
-	public void writeToReference(Reference ref, Serializer<?> serializer, HolderLookup_Provider registries) {
+	public void writeToReference(Operation operation, Reference ref, Serializer<?> serializer, HolderLookup_Provider registries) {
 		BooleanSerializer s = this.testSerializer(serializer, BooleanSerializer.class);
 		ref.getValueHolder().set(s.getData());
 	}

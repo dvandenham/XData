@@ -1,4 +1,4 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
 import java.util.Collection;
 import java.util.Iterator;

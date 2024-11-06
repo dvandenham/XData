@@ -124,10 +124,10 @@ public final class XDataRegister {
 		if (clazz instanceof GenericArrayType array) {
 			Type contentType = array.getGenericComponentType();
 			ReferenceHandler contentHandler = getHandler(contentType);
-			Class<?> rawType = Utils.getRawType(contentType);
+			Class<?> rawType = getRawType(contentType);
 			return ArrayHandler.FACTORY.apply(contentHandler, rawType == null ? Object.class : rawType);
 		}
-		Class<?> rawType = Utils.getRawType(clazz);
+		Class<?> rawType = getRawType(clazz);
 		if (rawType != null) {
 			if (rawType.isArray()) {
 				Class<?> contentType = rawType.getComponentType();
@@ -137,7 +137,7 @@ public final class XDataRegister {
 			if (Collection.class.isAssignableFrom(rawType)) {
 				Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
 				ReferenceHandler contentHandler = getHandler(contentType);
-				Class<?> rawContentType = Utils.getRawType(contentType);
+				Class<?> rawContentType = getRawType(contentType);
 				return CollectionHandler.FACTORY.apply(contentHandler, rawContentType == null ? Object.class : rawContentType);
 			}
 			return XDataRegister.getHandlerByClass(rawType);
@@ -151,6 +151,15 @@ public final class XDataRegister {
 			throw new IllegalStateException("Cannot fetch %s during initialization!".formatted(ReferenceHandler.class.getName()));
 		}
 		return HANDLER_TYPE_CACHE.computeIfAbsent(clazz, ignored -> HANDLERS_SORTED.stream().filter(entry -> entry.canHandle(clazz)).findFirst().orElse(null));
+	}
+
+	public static Class<?> getRawType(Type type) {
+		return switch (type) {
+			case Class<?> aClass -> aClass;
+			case GenericArrayType genericArrayType -> getRawType(genericArrayType.getGenericComponentType());
+			case ParameterizedType parameterizedType -> getRawType(parameterizedType.getRawType());
+			case null, default -> null;
+		};
 	}
 
 	@SuppressWarnings("unchecked")

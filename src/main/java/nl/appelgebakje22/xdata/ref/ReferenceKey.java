@@ -1,12 +1,12 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import lombok.Getter;
+import nl.appelgebakje22.xdata.Lazy;
 import nl.appelgebakje22.xdata.api.Persisted;
 import nl.appelgebakje22.xdata.api.Synchronized;
 import org.jetbrains.annotations.Nullable;
-import static nl.appelgebakje22.xdata.Utils.getNotEmptyOrFallback;
 
 public class ReferenceKey {
 
@@ -45,7 +45,11 @@ public class ReferenceKey {
 		return this.syncKey.get();
 	}
 
-	static ReferenceKey of(Field field) {
+	private static String getNotEmptyOrFallback(@Nullable String str, String fallback) {
+		return str == null || str.isBlank() ? fallback : str.trim();
+	}
+
+	public static ReferenceKey of(Field field) {
 		return new ReferenceKey(field.getName(), field, field.getGenericType());
 	}
 }

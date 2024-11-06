@@ -1,4 +1,4 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
 import java.lang.reflect.Field;
 import lombok.Getter;

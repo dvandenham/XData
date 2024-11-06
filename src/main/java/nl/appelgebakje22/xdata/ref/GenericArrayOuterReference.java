@@ -1,9 +1,12 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import nl.appelgebakje22.xdata.XData;
+import nl.appelgebakje22.xdata.XDataRegister;
+import nl.appelgebakje22.xdata.api.Copier;
 import nl.appelgebakje22.xdata.api.Holder;
 
 public class GenericArrayOuterReference extends Reference {
@@ -18,7 +21,7 @@ public class GenericArrayOuterReference extends Reference {
 		this.isArray = key.getRawField().getType().isArray();
 		Object currentValue = valueHolder.get();
 		if (currentValue != null) {
-			this.lastValue = Utils.cloneGenericArray(currentValue, this.isArray);
+			this.lastValue = cloneGenericArray(currentValue, this.isArray);
 			this.lastLength = Array.getLength(this.lastLength);
 		}
 	}
@@ -28,7 +31,7 @@ public class GenericArrayOuterReference extends Reference {
 		Object currentValue = getValueHolder().get();
 		if ((currentValue == null && this.lastValue != null) || (currentValue != null && this.lastValue == null) || (this.lastValue != null && hasChanged(currentValue))) {
 			if (currentValue != null) {
-				this.lastValue = Utils.cloneGenericArray(currentValue, this.isArray);
+				this.lastValue = cloneGenericArray(currentValue, this.isArray);
 				this.lastLength = Array.getLength(this.lastValue);
 			} else {
 				this.lastValue = null;
@@ -48,7 +51,7 @@ public class GenericArrayOuterReference extends Reference {
 			}
 			boolean hasChanged = false;
 			for (int i = 0; i < this.lastLength; ++i) {
-				if (!Utils.isEqual(Array.get(this.lastValue, i), Array.get(newValue, i))) {
+				if (!XData.isEqual(Array.get(this.lastValue, i), Array.get(newValue, i))) {
 					markDirty();
 					dirtyElements.add(i);
 					hasChanged = true;
@@ -65,12 +68,43 @@ public class GenericArrayOuterReference extends Reference {
 		int i = 0;
 		boolean hasChanged = false;
 		for (Object item : c) {
-			if (!Utils.isEqual(Array.get(this.lastValue, i++), item)) {
+			if (!XData.isEqual(Array.get(this.lastValue, i++), item)) {
 				markDirty();
 				dirtyElements.add(i);
 				hasChanged = true;
 			}
 		}
 		return hasChanged;
+	}
+
+	@SuppressWarnings({ "SuspiciousSystemArraycopy", "rawtypes", "unchecked" })
+	private static Object cloneGenericArray(Object array, boolean isArray) {
+		if (isArray) {
+			Class<?> componentType = array.getClass().getComponentType();
+			if (componentType.isPrimitive()) {
+				Object newArray = Array.newInstance(componentType, Array.getLength(array));
+				System.arraycopy(array, 0, newArray, 0, Array.getLength(newArray));
+				return newArray;
+			}
+			Object[] newArray = new Object[Array.getLength(array)];
+			for (int i = 0; i < newArray.length; ++i) {
+				Object item = Array.get(array, i);
+				if (item != null) {
+					Copier copier = XDataRegister.getCopier(item.getClass());
+					newArray[i] = copier != null ? copier.copy(item) : item;
+				}
+			}
+			return newArray;
+		}
+		Collection c = (Collection) array;
+		Object[] result = new Object[c.size()];
+		int i = 0;
+		for (Object item : c) {
+			if (item != null) {
+				Copier copier = XDataRegister.getCopier(item.getClass());
+				result[i++] = copier != null ? copier.copy(item) : item;
+			}
+		}
+		return result;
 	}
 }

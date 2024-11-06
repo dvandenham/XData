@@ -1,12 +1,14 @@
 package nl.appelgebakje22.xdata;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.Pair;
 import net.querz.nbt.tag.Tag;
+import nl.appelgebakje22.xdata.api.Checker;
 import nl.appelgebakje22.xdata.handlers.BooleanHandler;
 import nl.appelgebakje22.xdata.handlers.ByteHandler;
 import nl.appelgebakje22.xdata.handlers.CharHandler;
@@ -32,8 +34,6 @@ import nl.appelgebakje22.xdata.serializers.UUIDSerializer;
 import static nl.appelgebakje22.xdata.XDataRegister.register;
 
 public final class XData {
-
-	public static final String XDATA = "xdata";
 
 	public static void init() {
 		register(BooleanSerializer.class, BooleanSerializer::new, new BooleanHandler());
@@ -75,5 +75,24 @@ public final class XData {
 				return "memoize/2[function=" + memoBiFunction + ", size=" + this.cache.size() + "]";
 			}
 		};
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static boolean isEqual(Object value1, Object value2) {
+		if ((value1 == null) != (value2 == null)) {
+			return false;
+		}
+		if (value1 == null) {
+			return true;
+		}
+		if (!value1.getClass().isAssignableFrom(value2.getClass()) && !value2.getClass().isAssignableFrom(value1.getClass())) {
+			return false;
+		}
+		Checker checker1 = XDataRegister.getChecker(value1.getClass());
+		Checker checker2 = XDataRegister.getChecker(value2.getClass());
+		if (checker1 != checker2) {
+			return false;
+		}
+		return checker1 == null ? Objects.equals(value1, value2) : checker1.equals(value1, value2) && checker2.equals(value1, value2);
 	}
 }

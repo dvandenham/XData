@@ -1,4 +1,4 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
 import lombok.RequiredArgsConstructor;
 import nl.appelgebakje22.xdata.api.Holder;

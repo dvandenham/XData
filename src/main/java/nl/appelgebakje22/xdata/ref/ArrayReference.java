@@ -1,4 +1,4 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
 public class ArrayReference extends Reference {
 

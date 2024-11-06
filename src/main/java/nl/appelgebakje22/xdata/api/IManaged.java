@@ -5,4 +5,8 @@ import nl.appelgebakje22.xdata.ManagedDataMap;
 public interface IManaged {
 
 	ManagedDataMap getDataMap();
+
+	default String getSerializationRootTag() {
+		return "xdata";
+	}
 }

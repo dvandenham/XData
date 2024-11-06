@@ -1,5 +1,6 @@
-package nl.appelgebakje22.xdata;
+package nl.appelgebakje22.xdata.ref;
 
+import nl.appelgebakje22.xdata.ManagedDataMap;
 import nl.appelgebakje22.xdata.api.Holder;
 import nl.appelgebakje22.xdata.api.IManaged;
 

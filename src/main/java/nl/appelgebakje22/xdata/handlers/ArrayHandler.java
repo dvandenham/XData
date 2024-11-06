@@ -4,12 +4,13 @@ import java.lang.reflect.Array;
 import java.util.function.BiFunction;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import nl.appelgebakje22.xdata.ArrayReference;
-import nl.appelgebakje22.xdata.Reference;
+import nl.appelgebakje22.xdata.Operation;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
+import nl.appelgebakje22.xdata.ref.ArrayReference;
+import nl.appelgebakje22.xdata.ref.Reference;
 import nl.appelgebakje22.xdata.serializers.ArraySerializer;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,7 +27,7 @@ public final class ArrayHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Reference ref, HolderLookup_Provider registries) {
+	public Serializer<?> readFromReference(Operation operation, Reference ref, HolderLookup_Provider registries) {
 		final Object currentData = ref.getValueHolder().get();
 		if (currentData == null || !currentData.getClass().isArray()) {
 			throw new IllegalStateException("Field %s is not an array".formatted(ref.getKey().getRawField()));
@@ -35,13 +36,13 @@ public final class ArrayHandler implements ReferenceHandler {
 		final Serializer<?>[] arr = new Serializer[length];
 		for (int i = 0; i < arr.length; ++i) {
 			final Reference wrapped = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
-			arr[i] = this.contentHandler.readFromReference(wrapped, registries);
+			arr[i] = this.contentHandler.readFromReference(operation, wrapped, registries);
 		}
 		return ArraySerializer.of(arr);
 	}
 
 	@Override
-	public void writeToReference(Reference ref, Serializer<?> rawSerializer, HolderLookup_Provider registries) {
+	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer, HolderLookup_Provider registries) {
 		Object currentData = ref.getValueHolder().get();
 		if (currentData != null && !currentData.getClass().isArray()) {
 			throw new IllegalStateException("Field is not an array");
@@ -53,7 +54,7 @@ public final class ArrayHandler implements ReferenceHandler {
 		}
 		for (int i = 0; i < Array.getLength(currentData); ++i) {
 			ArrayReference itemRef = ArrayReference.of(ref.getKey(), currentData, i, this.contentType);
-			this.contentHandler.writeToReference(itemRef, serializer.getData()[i], registries);
+			this.contentHandler.writeToReference(operation, itemRef, serializer.getData()[i], registries);
 		}
 	}
 }
