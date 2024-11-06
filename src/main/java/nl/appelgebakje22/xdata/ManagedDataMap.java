@@ -13,12 +13,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import lombok.Getter;
-import net.querz.nbt.tag.CompoundTag;
-import net.querz.nbt.tag.Tag;
+import nl.appelgebakje22.xdata.adapter.AdapterFactory;
+import nl.appelgebakje22.xdata.adapter.BaseAdapter;
+import nl.appelgebakje22.xdata.adapter.TableAdapter;
 import nl.appelgebakje22.xdata.api.IManaged;
 import nl.appelgebakje22.xdata.api.Persisted;
 import nl.appelgebakje22.xdata.api.Synchronized;
-import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
 import nl.appelgebakje22.xdata.ref.Reference;
 import nl.appelgebakje22.xdata.ref.ReferenceKey;
 import nl.appelgebakje22.xdata.ref.ReflectionHolder;
@@ -128,8 +128,9 @@ public class ManagedDataMap {
 		return !this.dirtySyncFields.isEmpty();
 	}
 
-	public void saveToNbt(Operation operation, CompoundTag nbt, HolderLookup_Provider registries) {
-		nbt.put(this.managed.getSerializationRootTag(), XData.make(new CompoundTag(), tag -> this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
+	public TableAdapter serialize(Operation operation, AdapterFactory adapters) {
+		TableAdapter result = adapters.table();
+		this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
 			case FULL -> true;
 			case PARTIAL -> {
 				var key = entry.getValue();
@@ -139,27 +140,27 @@ public class ManagedDataMap {
 			}
 		}).forEach(entry -> {
 			Reference ref = getReference(entry.getValue());
-			Tag serializedRef = XDataSerializationUtils.writeRefToNbt(operation, ref, registries);
+			BaseAdapter serializedRef = XDataSerializationUtils.writeRefToAdapter(operation, adapters, ref);
 			if (serializedRef != null) {
-				tag.put(entry.getKey(), serializedRef);
+				result.set(entry.getKey(), serializedRef);
 			}
 			ref.clearPersistenceMark();
-		})));
+		});
+		return result;
 	}
 
-	public void readFromNbt(Operation operation, CompoundTag nbt, HolderLookup_Provider registries) {
-		CompoundTag tag = nbt.getCompoundTag(this.managed.getSerializationRootTag());
-		tag.keySet().forEach(tagKey -> {
+	public void deserialize(Operation operation, AdapterFactory adapters, TableAdapter table) {
+		for (String tagKey : table.getKeys()) {
 			ReferenceKey field = this.persistenceMapping.get(tagKey);
 			if (field == null) {
 				//TODO log
 				System.out.println("Cannot deserialize data for key " + tagKey + " since it has no mapping.");
 			} else {
 				Reference ref = getReference(field);
-				XDataSerializationUtils.readRefFromNbt(operation, ref, tag.get(tagKey), registries);
+				XDataSerializationUtils.readRefFromAdapter(operation, adapters, ref, table.get(tagKey));
 				ref.clearPersistenceMark();
 			}
-		});
+		}
 	}
 
 	private static ReferenceKey[] collectFields(Class<?> clazz) {

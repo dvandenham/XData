@@ -1,22 +1,22 @@
 package nl.appelgebakje22.xdata.serializers;
 
-import net.querz.nbt.tag.Tag;
 import nl.appelgebakje22.xdata.XData;
+import nl.appelgebakje22.xdata.adapter.AdapterFactory;
+import nl.appelgebakje22.xdata.adapter.BaseAdapter;
 import nl.appelgebakje22.xdata.api.SimpleSerializer;
-import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
 import nl.appelgebakje22.xdata.dummyclasses.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
-public class NbtSerializer extends SimpleSerializer<Tag> {
+public class AdapterSerializer extends SimpleSerializer<BaseAdapter> {
 
 	@Override
-	public @Nullable Tag serialize(HolderLookup_Provider registries) {
+	public @Nullable BaseAdapter serialize(AdapterFactory adapters) {
 		return getData();
 	}
 
 	@Override
-	public void deserialize(Tag tag, HolderLookup_Provider registries) {
-		this.setData(tag);
+	public void deserialize(AdapterFactory adapters, BaseAdapter adapter) {
+		setData(adapter);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class NbtSerializer extends SimpleSerializer<Tag> {
 		//TODO implement
 	}
 
-	public static NbtSerializer of(Tag data) {
-		return XData.make(new NbtSerializer(), serializer -> serializer.setData(data));
+	public static AdapterSerializer of(BaseAdapter data) {
+		return XData.make(new AdapterSerializer(), serializer -> serializer.setData(data));
 	}
 }

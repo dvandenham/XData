@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.Pair;
-import net.querz.nbt.tag.Tag;
+import nl.appelgebakje22.xdata.adapter.BaseAdapter;
 import nl.appelgebakje22.xdata.api.Checker;
 import nl.appelgebakje22.xdata.handlers.BooleanHandler;
 import nl.appelgebakje22.xdata.handlers.ByteHandler;
@@ -19,6 +19,7 @@ import nl.appelgebakje22.xdata.handlers.IManagedHandler;
 import nl.appelgebakje22.xdata.handlers.IntHandler;
 import nl.appelgebakje22.xdata.handlers.LongHandler;
 import nl.appelgebakje22.xdata.handlers.ShortHandler;
+import nl.appelgebakje22.xdata.serializers.AdapterSerializer;
 import nl.appelgebakje22.xdata.serializers.ArraySerializer;
 import nl.appelgebakje22.xdata.serializers.BooleanSerializer;
 import nl.appelgebakje22.xdata.serializers.ByteSerializer;
@@ -27,7 +28,6 @@ import nl.appelgebakje22.xdata.serializers.DoubleSerializer;
 import nl.appelgebakje22.xdata.serializers.FloatSerializer;
 import nl.appelgebakje22.xdata.serializers.IntSerializer;
 import nl.appelgebakje22.xdata.serializers.LongSerializer;
-import nl.appelgebakje22.xdata.serializers.NbtSerializer;
 import nl.appelgebakje22.xdata.serializers.ShortSerializer;
 import nl.appelgebakje22.xdata.serializers.StringSerializer;
 import nl.appelgebakje22.xdata.serializers.UUIDSerializer;
@@ -49,10 +49,10 @@ public final class XData {
 
 		register(StringSerializer.class, StringSerializer::new, String.class, true);
 		register(UUIDSerializer.class, UUIDSerializer::new, UUID.class, true);
-		register(NbtSerializer.class, NbtSerializer::new, Tag.class, false);
+		register(AdapterSerializer.class, AdapterSerializer::new, BaseAdapter.class, false);
 
 		register(StringSerializer.class, StringSerializer::new, new EnumHandler());
-		register(NbtSerializer.class, NbtSerializer::new, new IManagedHandler());
+		register(AdapterSerializer.class, AdapterSerializer::new, new IManagedHandler());
 
 		XDataRegister.freeze();
 	}

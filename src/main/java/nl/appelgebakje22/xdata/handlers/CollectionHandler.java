@@ -7,10 +7,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nl.appelgebakje22.xdata.Operation;
 import nl.appelgebakje22.xdata.XData;
+import nl.appelgebakje22.xdata.adapter.AdapterFactory;
 import nl.appelgebakje22.xdata.api.Holder;
 import nl.appelgebakje22.xdata.api.ReferenceHandler;
 import nl.appelgebakje22.xdata.api.Serializer;
-import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
 import nl.appelgebakje22.xdata.ref.CollectionReference;
 import nl.appelgebakje22.xdata.ref.Reference;
 import nl.appelgebakje22.xdata.ref.SimpleHolder;
@@ -30,7 +30,7 @@ public class CollectionHandler implements ReferenceHandler {
 	}
 
 	@Override
-	public Serializer<?> readFromReference(Operation operation, Reference ref, HolderLookup_Provider registries) {
+	public Serializer<?> readFromReference(Operation operation, AdapterFactory adapters, Reference ref) {
 		final Object currentData = ref.getValueHolder().get();
 		if (!(currentData instanceof final Collection<?> collection)) {
 			throw new IllegalStateException("Field is not a collection");
@@ -38,14 +38,14 @@ public class CollectionHandler implements ReferenceHandler {
 		final Serializer<?>[] arr = new Serializer[collection.size()];
 		for (int i = 0; i < arr.length; ++i) {
 			final Reference wrapped = CollectionReference.of(ref.getKey(), collection, i);
-			arr[i] = this.contentHandler.readFromReference(operation, wrapped, registries);
+			arr[i] = this.contentHandler.readFromReference(operation, adapters, wrapped);
 		}
 		return XData.make(new ArraySerializer(), serializer -> serializer.setData(arr));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void writeToReference(Operation operation, Reference ref, Serializer<?> rawSerializer, HolderLookup_Provider registries) {
+	public void writeToReference(Operation operation, AdapterFactory adapters, Reference ref, Serializer<?> rawSerializer) {
 		final Object currentData = ref.getValueHolder().get();
 		if (!(currentData instanceof final Collection collection)) {
 			throw new IllegalStateException("Field is not a collection");
@@ -54,7 +54,7 @@ public class CollectionHandler implements ReferenceHandler {
 		collection.clear();
 		for (Serializer<?> item : serializer.getData()) {
 			Holder itemHolder = new SimpleHolder();
-			this.contentHandler.writeToReference(operation, Reference.of(ref.getKey(), itemHolder), item, registries);
+			this.contentHandler.writeToReference(operation, adapters, Reference.of(ref.getKey(), itemHolder), item);
 			collection.add(itemHolder.get());
 		}
 	}

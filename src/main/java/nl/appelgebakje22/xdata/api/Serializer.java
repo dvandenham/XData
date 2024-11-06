@@ -1,17 +1,17 @@
 package nl.appelgebakje22.xdata.api;
 
-import net.querz.nbt.tag.Tag;
 import nl.appelgebakje22.xdata.XDataRegister;
-import nl.appelgebakje22.xdata.dummyclasses.HolderLookup_Provider;
+import nl.appelgebakje22.xdata.adapter.AdapterFactory;
+import nl.appelgebakje22.xdata.adapter.BaseAdapter;
 import nl.appelgebakje22.xdata.dummyclasses.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 public interface Serializer<T> {
 
 	@Nullable
-	Tag serialize(HolderLookup_Provider registries);
+	BaseAdapter serialize(AdapterFactory adapters);
 
-	void deserialize(Tag tag, HolderLookup_Provider registries);
+	void deserialize(AdapterFactory adapters, BaseAdapter adapter);
 
 	void toNetwork(RegistryFriendlyByteBuf buf);
 
@@ -19,11 +19,11 @@ public interface Serializer<T> {
 
 	T getData();
 
-	default <A extends Tag> A testTag(Tag tag, Class<A> expectedType) {
-		if (expectedType.isAssignableFrom(tag.getClass())) {
-			return expectedType.cast(tag);
+	default <A extends BaseAdapter> A testAdapter(BaseAdapter adapter, Class<A> expectedType) {
+		if (expectedType.isAssignableFrom(adapter.getClass())) {
+			return expectedType.cast(adapter);
 		}
-		throw new IllegalArgumentException("Expected %s of type %s, got: %s".formatted(Tag.class.getName(), expectedType.getName(), tag.getClass().getName()));
+		throw new IllegalArgumentException("Expected Adapter of type %s, got: %s".formatted(expectedType.getName(), adapter.getClass().getName()));
 	}
 
 	default int getSid() {
