@@ -1,6 +1,7 @@
 package nl.appelgebakje22.xdata.serializers;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
 import nl.appelgebakje22.xdata.XData;
 import nl.appelgebakje22.xdata.XDataRegister;
 import nl.appelgebakje22.xdata.adapter.AdapterFactory;
@@ -10,6 +11,7 @@ import nl.appelgebakje22.xdata.adapter.NetworkAdapter;
 import nl.appelgebakje22.xdata.adapter.TableAdapter;
 import nl.appelgebakje22.xdata.api.Serializer;
 import nl.appelgebakje22.xdata.ref.ArrayReference;
+import nl.appelgebakje22.xdata.ref.CollectionReference;
 import nl.appelgebakje22.xdata.ref.Reference;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,13 +79,25 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 	}
 
 	private static Reference[] makeRefs(Reference arrayRef, int length) {
-		Object array = arrayRef.getValueHolder().get();
-		Class<?> arrayType = arrayRef.getKey().getRawField().getType().getComponentType();
-		Reference[] result = new Reference[length];
-		for (int i = 0; i < result.length; ++i) {
-			result[i] = ArrayReference.of(arrayRef.getKey(), array, i, arrayType);
+		Class<?> fieldType = arrayRef.getKey().getRawField().getType();
+		if (fieldType.isArray()) {
+			Object array = arrayRef.getValueHolder().get();
+			Class<?> arrayType = fieldType.getComponentType();
+			Reference[] result = new Reference[length];
+			for (int i = 0; i < result.length; ++i) {
+				result[i] = ArrayReference.of(arrayRef.getKey(), array, i, arrayType);
+			}
+			return result;
+		} else if (Collection.class.isAssignableFrom(fieldType)) {
+			Collection<?> collection = (Collection<?>) arrayRef.getValueHolder().get();
+			Reference[] result = new Reference[length];
+			for (int i = 0; i < result.length; ++i) {
+				result[i] = CollectionReference.of(arrayRef.getKey(), collection, i);
+			}
+			return result;
+		} else {
+			throw new IllegalStateException("Could not create %ss for unknown array field-type %s".formatted(Reference.class.getName(), fieldType));
 		}
-		return result;
 	}
 
 	public static ArraySerializer of(Serializer<?>[] data) {
