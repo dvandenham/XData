@@ -1,6 +1,7 @@
 plugins {
 	id "java"
 	id("io.freefair.lombok") version "8.10.2"
+	id "maven-publish"
 }
 
 repositories {
@@ -17,4 +18,25 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/com.github.Querz/NBT
 	testImplementation 'com.github.Querz:NBT:6.1'
+}
+
+publishing {
+	repositories {
+		maven {
+			name = "Xanadu"
+			url = "https://repo.xeromeda.com/snapshots"
+			credentials(PasswordCredentials)
+			authentication {
+				basic(BasicAuthentication)
+			}
+		}
+	}
+	publications {
+		maven(MavenPublication) {
+			groupId = "nl.appelgebakje22"
+			artifactId = "xdata"
+			version = System.getenv("VERSION")
+			from components.java
+		}
+	}
 }
