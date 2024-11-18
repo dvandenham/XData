@@ -20,6 +20,6 @@ jobs:
       run: ./gradlew build publish
       env:
         VERSION: ${{ github.event.tag_name }}
-        USERNAME: ${{ secrets.MAVEN_USERNAME }}
-        TOKEN: ${{ secrets.MAVEN_PASSWORD }}
+        MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
+        MAVEN_SECRET: ${{ secrets.MAVEN_SECRET }}
         
