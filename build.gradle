@@ -29,6 +29,10 @@ publishing {
 			authentication {
 				basic(BasicAuthentication)
 			}
+			credentials {
+				username = System.getenv("MAVEN_NAME") ?: getProperty("XanaduUsername")
+				password = System.getenv("MAVEN_SECRET") ?: getProperty("XanaduPassword")
+			}
 		}
 	}
 	publications {
