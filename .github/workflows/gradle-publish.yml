@@ -2,7 +2,11 @@ name: Publish to Xanadu
 
 on:
   release:
-    types: [created]
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      releaseName:
+        description: "Release name"
 
 jobs:
   build:
@@ -19,7 +23,7 @@ jobs:
     - name: Build and publish with Gradle
       run: ./gradlew --no-daemon build publish
       env:
-        VERSION: ${{ github.event.tag_name }}
+        VERSION: ${{ github.event.inputs.releaseName || github.event.release.tag_name }}
         MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
         MAVEN_SECRET: ${{ secrets.MAVEN_SECRET }}
         
