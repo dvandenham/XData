@@ -25,7 +25,6 @@ publishing {
 		maven {
 			name = "Xanadu"
 			url = "https://repo.xeromeda.com/snapshots"
-			credentials(PasswordCredentials)
 			authentication {
 				basic(BasicAuthentication)
 			}
